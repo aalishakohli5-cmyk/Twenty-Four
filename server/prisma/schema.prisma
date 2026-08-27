@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Supabase handles real auth (auth.users). We keep a lightweight profile
+// keyed by the Supabase user id (a uuid string) for app-specific data.
+model Profile {
+  id            String   @id // Supabase auth.users.id
+  email         String   @unique
+  displayName   String?
+  coinBalance   Int      @default(0)
+  streakDays    Int      @default(0)
+  lastActiveDay DateTime?
+  createdAt     DateTime @default(now())
+
+  tasks         Task[]
+  focusSessions FocusSession[]
+  transactions  Transaction[]
+  userRewards   UserReward[]
+  restDays      RestDay[]
+  settings      UserSettings?
+}
+
+enum TaskDifficulty {
+  SHORT
+  MEDIUM
+  DIFFICULT
+}
+
+enum TaskStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  MISSED
+  RESCHEDULED
+}
+
+model Task {
+  id           String         @id @default(uuid())
+  profile      Profile        @relation(fields: [profileId], references: [id])
+  profileId    String
+  title        String
+  category     String? // sleep, meals, travel, class, work, personal, focus
+  date         DateTime // the day this task is scheduled on (date only, time zeroed)
+  startHour    Int // 0-23
+  durationHrs  Int            @default(1)
+  difficulty   TaskDifficulty @default(SHORT)
+  status       TaskStatus     @default(PLANNED)
+  createdAt    DateTime       @default(now())
+  completedAt  DateTime?
+
+  focusSessions FocusSession[]
+
+  @@index([profileId, date])
+}
+
+model FocusSession {
+  id          String    @id @default(uuid())
+  profile     Profile   @relation(fields: [profileId], references: [id])
+  profileId   String
+  task        Task?     @relation(fields: [taskId], references: [id])
+  taskId      String?
+  startedAt   DateTime  @default(now())
+  endedAt     DateTime?
+  focusedMins Int       @default(0)
+  coinsEarned Int       @default(0)
+
+  @@index([profileId])
+}
+
+enum TransactionType {
+  FOCUS_REWARD
+  TASK_COMPLETION_BONUS
+  DAILY_PLAN_BONUS
+  STREAK_BONUS
+  DECAY_PENALTY
+  REWARD_PURCHASE
+}
+
+model Transaction {
+  id        String          @id @default(uuid())
+  profile   Profile         @relation(fields: [profileId], references: [id])
+  profileId String
+  type      TransactionType
+  amount    Int // positive = earned, negative = spent/decayed
+  note      String?
+  createdAt DateTime        @default(now())
+
+  @@index([profileId, createdAt])
+}
+
+model Reward {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+  category    String // background, theme, taskbar, animation, sound, avatar
+  priceCoins  Int
+  assetUrl    String?
+
+  userRewards UserReward[]
+}
+
+model UserReward {
+  id         String   @id @default(uuid())
+  profile    Profile  @relation(fields: [profileId], references: [id])
+  profileId  String
+  reward     Reward   @relation(fields: [rewardId], references: [id])
+  rewardId   String
+  unlockedAt DateTime @default(now())
+  active     Boolean  @default(false)
+
+  @@unique([profileId, rewardId])
+}
+
+model RestDay {
+  id        String   @id @default(uuid())
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  profileId String
+  date      DateTime
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@unique([profileId, date])
+}
+
+model UserSettings {
+  id                 String  @id @default(uuid())
+  profile            Profile @relation(fields: [profileId], references: [id])
+  profileId          String  @unique
+  focusCoinsPerHour  Int     @default(10)
+  dailyPlanBonus     Int     @default(25)
+  streakBonus        Int     @default(100)
+  decayEnabled       Boolean @default(true)
+  decayPercent       Int     @default(10)
+  reminderTimeHour   Int?    // hour of day to send a reminder, e.g. 20
+}
