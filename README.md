@@ -1,4 +1,4 @@
-# TwentyFour — Time = Money
+# TwentyFour  Time = Money
 
 > A gamified productivity app that turns focused time into visible value.
 
