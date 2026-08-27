@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, Clock3 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
@@ -25,45 +26,67 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-2xl border border-white/10 bg-panel p-8">
-        <h1 className="mb-6 text-xl font-semibold">Welcome back</h1>
+    <main className="auth-page">
+      <video className="auth-background-video" autoPlay loop muted playsInline preload="metadata" aria-hidden="true">
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260613_180732_a54afbf6-b30d-470e-861f-669871f09f67.mp4" type="video/mp4" />
+      </video>
+      <div className="auth-video-shade" aria-hidden="true" />
+      <div className="auth-grain" aria-hidden="true" />
 
-        {error && <p className="mb-4 text-sm text-coral">{error}</p>}
+      <Link to="/" className="auth-brand" aria-label="Back to TwentyFour home">
+        <span><Clock3 size={17} /></span>
+        <strong>TwentyFour</strong>
+      </Link>
 
-        <label className="mb-1 block text-xs text-cream/60">Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="mb-4 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 text-sm"
-        />
+      <section className="auth-layout">
+        <div className="auth-message">
+          <span className="auth-kicker">TIME = MONEY</span>
+          <h1>Return to the<br /><em>hours that matter.</em></h1>
+          <p>Your plans, focus sessions and earned progress are waiting exactly where you left them.</p>
+        </div>
 
-        <label className="mb-1 block text-xs text-cream/60">Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="mb-6 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 text-sm"
-        />
+        <form onSubmit={handleSubmit} className="auth-card">
+          <div className="auth-card-head">
+            <span>WELCOME BACK</span>
+            <h2>Log in to your day.</h2>
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mb-4 w-full rounded-lg bg-gold py-2.5 text-sm font-medium text-ink disabled:opacity-50"
-        >
-          {loading ? "Logging in..." : "Log in"}
-        </button>
+          {error && <p className="auth-error" role="alert">{error}</p>}
 
-        <p className="text-center text-xs text-cream/50">
-          No account?{" "}
-          <Link to="/signup" className="text-gold">
-            Sign up
-          </Link>
-        </p>
-      </form>
-    </div>
+          <label className="auth-field">
+            <span>Email address</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              placeholder="you@example.com"
+            />
+          </label>
+
+          <label className="auth-field">
+            <span>Password</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              placeholder="Enter your password"
+            />
+          </label>
+
+          <button type="submit" disabled={loading} className="auth-submit">
+            <span>{loading ? "Logging in..." : "Enter TwentyFour"}</span>
+            <i><ArrowRight size={17} /></i>
+          </button>
+
+          <p className="auth-switch">New here? <Link to="/signup">Create an account</Link></p>
+        </form>
+      </section>
+
+      <span className="auth-footer">24 HOURS · YOUR DECISIONS · YOUR VALUE</span>
+    </main>
   );
 }
