@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Clock3 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,6 +26,17 @@ export default function Login() {
     }
   }
 
+  async function handleGoogleSignIn() {
+    setError("");
+    setGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to continue with Google");
+      setGoogleLoading(false);
+    }
+  }
+
   return (
     <main className="auth-page">
       <video className="auth-background-video" autoPlay loop muted playsInline preload="metadata" aria-hidden="true">
@@ -34,15 +46,21 @@ export default function Login() {
       <div className="auth-grain" aria-hidden="true" />
 
       <Link to="/" className="auth-brand" aria-label="Back to TwentyFour home">
-        <span><Clock3 size={17} /></span>
+        <span className="auth-mini-clock" aria-hidden="true">
+          {Array.from({ length: 12 }, (_, index) => <i key={index} style={{ "--auth-tick": index } as React.CSSProperties} />)}
+          <b className="auth-mini-hand auth-mini-hour" />
+          <b className="auth-mini-hand auth-mini-minute" />
+          <b className="auth-mini-hand auth-mini-second" />
+          <em />
+        </span>
         <strong>TwentyFour</strong>
       </Link>
 
       <section className="auth-layout">
         <div className="auth-message">
-          <span className="auth-kicker">TIME = MONEY</span>
+          <span className="auth-kicker">YOUR TIME, STILL YOURS</span>
           <h1>Return to the<br /><em>hours that matter.</em></h1>
-          <p>Your plans, focus sessions and earned progress are waiting exactly where you left them.</p>
+          <p>Your next hour is still yours. Pick up your plan, return to focus, and keep building the progress you started.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-card">
@@ -52,6 +70,22 @@ export default function Login() {
           </div>
 
           {error && <p className="auth-error" role="alert">{error}</p>}
+
+          <button type="button" className="auth-google" onClick={handleGoogleSignIn} disabled={googleLoading || loading}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M21.6 12.23c0-.71-.06-1.4-.18-2.07H12v3.92h5.38a4.6 4.6 0 0 1-2 3.02v2.54h3.24c1.9-1.75 2.98-4.33 2.98-7.41Z" />
+              <path fill="#34A853" d="M12 22c2.7 0 4.97-.9 6.62-2.36l-3.24-2.54c-.9.6-2.05.96-3.38.96-2.6 0-4.8-1.76-5.59-4.12H3.06v2.62A10 10 0 0 0 12 22Z" />
+              <path fill="#FBBC05" d="M6.41 13.94A6 6 0 0 1 6.1 12c0-.67.11-1.32.31-1.94V7.44H3.06A10 10 0 0 0 2 12c0 1.61.38 3.14 1.06 4.56l3.35-2.62Z" />
+              <path fill="#EA4335" d="M12 5.94c1.47 0 2.79.5 3.83 1.5l2.87-2.88A9.63 9.63 0 0 0 12 2a10 10 0 0 0-8.94 5.44l3.35 2.62C7.2 7.7 9.4 5.94 12 5.94Z" />
+            </svg>
+            {googleLoading ? (
+              <span>Opening Google...</span>
+            ) : (
+              <span className="google-label">Continue with <b className="google-blue">G</b><b className="google-red">o</b><b className="google-yellow">o</b><b className="google-blue">g</b><b className="google-green">l</b><b className="google-red">e</b></span>
+            )}
+          </button>
+
+          <div className="auth-divider"><span>or continue with email</span></div>
 
           <label className="auth-field">
             <span>Email address</span>
