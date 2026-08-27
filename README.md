@@ -62,3 +62,4 @@ TwentyFour is an early-stage hackathon project. The core user journey and techni
 ---
 
 **Every hour has value. Make it count.**
+
