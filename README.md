@@ -1,43 +1,113 @@
 # TwentyFour — Time = Money
 
-A productivity app that turns your planned and focused hours into coins.
+> A gamified productivity app that turns focused time into visible value.
 
-## Stack
-- **Client:** React + Vite + TypeScript + Tailwind CSS → deployed on Vercel
-- **Server:** Node + Express + TypeScript + Prisma → deployed on Render
-- **Database/Auth:** Supabase (Postgres + Auth)
+TwentyFour helps people plan their day across 24 real hours, focus on what matters, and earn digital coins for their effort. Coins can be used to unlock rewards and personalize the experience—making productivity feel less like pressure and more like progress.
 
-## Project structure
+## The problem
+
+Traditional to-do lists show what is unfinished, but they rarely help users understand where their time went. For people who procrastinate or struggle with consistency, an endless list can quickly become discouraging.
+
+## Our solution
+
+TwentyFour combines daily planning, focus tracking, and game-like rewards in one experience:
+
+**Plan → Focus → Earn → Unlock**
+
+- Plan tasks inside a visible 24-hour day.
+- Start focused work sessions connected to real tasks.
+- Earn coins for time spent focusing and tasks completed.
+- Track progress through a wallet and daily report.
+- Spend earned coins on unlockable themes and rewards.
+
+## How the coin system works
+
+TwentyFour rewards both effort and completion.
+
+| Action | Coins |
+| --- | ---: |
+| Focused work | Based on focused minutes and the user's hourly rate |
+| Complete a short task | 5 |
+| Complete a medium task | 10 |
+| Complete a difficult task | 20 |
+
+Coins are virtual in-app points and have no real-world monetary value.
+
+## Key features
+
+- Cinematic, animated landing experience
+- Supabase sign-up and login
+- 24-hour daily task planning
+- Focus-session tracking
+- Task completion rewards
+- Coin wallet and transaction history
+- Unlockable reward store
+- Daily productivity reports
+- Protected personal workspace
+
+## Built with
+
+- **Frontend:** React, Vite, TypeScript, Tailwind CSS
+- **Animation:** Framer Motion
+- **Backend:** Node.js, Express, TypeScript
+- **Database:** Supabase Postgres
+- **Authentication:** Supabase Auth
+- **ORM:** Prisma
+- **Deployment:** Vercel and Render
+
+## Run locally
+
+### 1. Install dependencies
+
+```bash
+git clone https://github.com/aalishakohli5-cmyk/Twenty-Four.git
+cd Twenty-Four
+
+cd server && npm install
+cd ../client && npm install
 ```
-Twenty-Four/
-  client/   # React app
-  server/   # Express API
+
+### 2. Add environment variables
+
+Create `server/.env` with your Supabase database connection, project URL, secret server key, `PORT=4000`, and `CLIENT_URL=http://localhost:5173`.
+
+Create `client/.env` with:
+
+```env
+VITE_SUPABASE_URL="YOUR_SUPABASE_PROJECT_URL"
+VITE_SUPABASE_PUBLISHABLE_KEY="YOUR_SUPABASE_PUBLISHABLE_KEY"
+VITE_API_URL="http://localhost:4000"
 ```
 
-## Local setup
+Never commit either `.env` file or place a Supabase secret key in the client.
 
-### 1. Database
-1. Create a Supabase project.
-2. Copy `server/.env.example` → `server/.env` and fill in `DATABASE_URL` / `DIRECT_URL` (Project dashboard → Connect button → ORMs tab → Prisma) and `SUPABASE_URL` + `SUPABASE_SECRET_KEY` (Settings → API Keys tab — new projects issue `sb_secret_...` keys, not the old `service_role`).
-3. `cd server && npm install && npx prisma migrate dev --name init && npx prisma db seed`
+### 3. Prepare the database
 
-### 2. Server
-```
+```bash
 cd server
-npm install
-npm run dev
+npx prisma generate
+npx prisma migrate dev
+npx prisma db seed
 ```
-Runs on http://localhost:4000
 
-### 3. Client
-Copy `client/.env.example` → `client/.env` and fill in `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (Settings → API Keys — the `sb_publishable_...` key), and `VITE_API_URL=http://localhost:4000`.
-```
+### 4. Start the app
+
+```bash
+# Terminal 1
+cd server
+npm run dev
+
+# Terminal 2
 cd client
-npm install
 npm run dev
 ```
-Runs on http://localhost:5173
 
-## Deploy
-- **Client → Vercel:** import the repo, set root directory to `client`, add the same env vars as `client/.env`.
-- **Server → Render:** new Web Service, root directory `server`, build command `npm install && npx prisma generate && npm run build`, start command `npm start`, add the same env vars as `server/.env`.
+Open [http://localhost:5173](http://localhost:5173).
+
+## Project status
+
+TwentyFour is an early-stage hackathon project. The core user journey and technical foundation are in place, with further product refinement, testing, accessibility work, and deployment in progress.
+
+---
+
+**Every hour has value. Make it count.**
