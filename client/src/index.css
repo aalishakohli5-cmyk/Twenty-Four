@@ -372,6 +372,9 @@ body {
 .auth-submit:disabled { cursor:wait; opacity:.58; }
 .auth-switch { margin-top:1.35rem; color:rgba(238,232,213,.45); font-size:.66rem; text-align:center; }.auth-switch a { color:#f0b429; }.auth-switch a:hover { text-decoration:underline; }
 .auth-footer { position:absolute; right:clamp(1.4rem,4vw,4rem); bottom:1.5rem; color:rgba(238,232,213,.3); font-size:.48rem; letter-spacing:.22em; }
+.auth-confirmation-copy { margin-top:.2rem; color:rgba(220,230,232,.62); font-family:Georgia,"Times New Roman",serif; font-size:1rem; line-height:1.75; }
+.auth-confirmation-copy strong { color:#eee8d5; font-weight:500; overflow-wrap:anywhere; }
+.auth-confirmation-card .auth-submit { margin-top:3rem; }
 
 @media (max-width:820px) {
   .auth-page { align-items:flex-end; }
