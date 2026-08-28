@@ -1,54 +1,25 @@
-interface Task {
-  id: string;
-  title: string;
-  status: string;
-  durationHrs: number;
-  difficulty: "SHORT" | "MEDIUM" | "DIFFICULT";
-}
+import { ArrowRight, Check, Plus } from "lucide-react";
 
-interface Props {
-  hour: number;
-  task?: Task;
-  potentialCoins: number;
-  onClick: () => void;
-}
+interface Task { id:string; title:string; status:string; durationHrs:number; difficulty:"SHORT"|"MEDIUM"|"DIFFICULT"; }
+interface Props { hour:number; task?:Task; potentialCoins:number; onClick:()=>void; current?:boolean; }
 
-function formatHour(h: number) {
+function formatHour(h:number) {
   const period = h < 12 ? "AM" : "PM";
-  const display = h % 12 === 0 ? 12 : h % 12;
-  return `${display}${period}`;
+  return `${h % 12 === 0 ? 12 : h % 12} ${period}`;
 }
 
-export default function HourSlot({ hour, task, potentialCoins, onClick }: Props) {
-  const isPeak = (hour >= 4 && hour < 8) || hour >= 23 || hour < 3;
-
+export default function HourSlot({ hour, task, potentialCoins, onClick, current=false }:Props) {
+  const peak = (hour >= 4 && hour < 8) || hour >= 23 || hour < 3;
+  const completed = task?.status === "COMPLETED";
   return (
-    <button
-      onClick={onClick}
-      className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors ${
-        task
-          ? task.status === "COMPLETED"
-            ? "border-gold/40 bg-gold/10"
-            : "border-white/15 bg-panel"
-          : "border-white/5 bg-panel/40 hover:border-white/20"
-      }`}
-    >
-      <span className="w-14 shrink-0 text-xs text-cream/50">{formatHour(hour)}</span>
-      <div className="flex-1">
-        {task ? (
-          <>
-            <p className="text-sm font-medium">{task.title}</p>
-            <p className="text-xs text-cream/50">
-              {task.durationHrs}h · {task.difficulty.toLowerCase()} · {task.status.toLowerCase()}
-            </p>
-          </>
-        ) : (
-          <p className="text-sm text-cream/30">Empty slot</p>
-        )}
-      </div>
-      <span className={`text-xs font-semibold ${isPeak ? "text-gold" : "text-cream/40"}`}>
-        +{potentialCoins}c
+    <button onClick={onClick} className={`timeline-slot ${task ? "filled" : "empty"} ${completed ? "completed" : ""} ${peak ? "peak" : ""} ${current ? "current" : ""}`}>
+      <span className="timeline-time">{formatHour(hour)}</span>
+      <span className="timeline-rail"><i /></span>
+      <span className="timeline-content">
+        {task ? <><strong>{task.title}</strong><small>{task.durationHrs} hour{task.durationHrs > 1 ? "s" : ""} · {task.difficulty.toLowerCase()}</small></> : <span className="timeline-coin-arrow" aria-hidden="true"><ArrowRight size={18}/></span>}
       </span>
+      <span className="timeline-coins">+{potentialCoins}<small> coins</small></span>
+      <span className="timeline-action">{completed ? <Check size={16}/> : <Plus size={16}/>}</span>
     </button>
   );
 }

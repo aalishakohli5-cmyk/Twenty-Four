@@ -1,42 +1,40 @@
 import { NavLink } from "react-router-dom";
+import { CalendarDays, ChartNoAxesColumnIncreasing, Gift, LogOut, Settings, Timer, WalletCards } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const links = [
-  { to: "/today", label: "Today" },
-  { to: "/wallet", label: "Wallet" },
-  { to: "/store", label: "Store" },
-  { to: "/report", label: "Report" },
-  { to: "/settings", label: "Settings" },
+  { to: "/today", label: "My day", icon: CalendarDays },
+  { to: "/focus", label: "Focus", icon: Timer },
+  { to: "/wallet", label: "Wallet", icon: WalletCards },
+  { to: "/store", label: "Rewards", icon: Gift },
+  { to: "/report", label: "Reports", icon: ChartNoAxesColumnIncreasing },
+  { to: "/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Navbar() {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
+  const initial = (user?.email?.[0] ?? "T").toUpperCase();
 
   return (
-    <nav className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-      <div className="flex items-center gap-2 text-lg font-semibold">
-        <span className="text-gold">24</span>
-        <span>TwentyFour</span>
-      </div>
-      <div className="flex items-center gap-5 text-sm">
-        {links.map((l) => (
-          <NavLink
-            key={l.to}
-            to={l.to}
-            className={({ isActive }) =>
-              `transition-colors hover:text-gold ${isActive ? "text-gold" : "text-cream/70"}`
-            }
-          >
-            {l.label}
+    <aside className="dash-nav">
+      <NavLink to="/today" className="dash-brand">
+        <span className="dash-brand-clock"><i /><b /></span>
+        <strong>TwentyFour</strong>
+      </NavLink>
+
+      <nav className="dash-nav-links" aria-label="Dashboard navigation">
+        {links.map(({ to, label, icon: Icon }) => (
+          <NavLink key={to} to={to} className={({ isActive }) => `dash-nav-link ${isActive ? "active" : ""}`}>
+            <Icon size={18} strokeWidth={1.7} /><span>{label}</span>
           </NavLink>
         ))}
-        <button
-          onClick={signOut}
-          className="rounded-lg border border-white/10 px-3 py-1.5 text-cream/70 hover:border-coral hover:text-coral"
-        >
-          Sign out
-        </button>
+      </nav>
+
+      <div className="dash-account">
+        <span className="dash-avatar">{initial}</span>
+        <div><strong>{user?.user_metadata?.full_name ?? "Your account"}</strong><small>{user?.email}</small></div>
+        <button onClick={signOut} aria-label="Sign out" title="Sign out"><LogOut size={17} /></button>
       </div>
-    </nav>
+    </aside>
   );
 }
