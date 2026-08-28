@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { CalendarDays, ChartNoAxesColumnIncreasing, Gift, LogOut, Settings, Timer, WalletCards } from "lucide-react";
+import { BookOpenText, CalendarDays, ChartNoAxesColumnIncreasing, Gift, LogOut, Settings, Timer, WalletCards } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const links = [
@@ -8,6 +8,7 @@ const links = [
   { to: "/wallet", label: "Wallet", icon: WalletCards },
   { to: "/store", label: "Rewards", icon: Gift },
   { to: "/report", label: "Reports", icon: ChartNoAxesColumnIncreasing },
+  { to: "/rules", label: "Rules", icon: BookOpenText },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 

@@ -8,6 +8,7 @@ import Wallet from "./pages/Wallet";
 import RewardStore from "./pages/RewardStore";
 import DailyReport from "./pages/DailyReport";
 import Settings from "./pages/Settings";
+import Rules from "./pages/Rules";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -54,6 +55,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <DailyReport />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/rules"
+        element={
+          <ProtectedRoute>
+            <Rules />
           </ProtectedRoute>
         }
       />

@@ -33,7 +33,8 @@ export default function Today() {
   async function handleCreate(data:{title:string;category:string;startHour:number;durationHrs:number;difficulty:"SHORT"|"MEDIUM"|"DIFFICULT"}) { await api.post("/api/tasks",{...data,date:today}); await loadTasks(); }
   async function handleComplete(taskId:string) { await api.post(`/api/tasks/${taskId}/complete`); await loadTasks(); }
 
-  const tasksByHour = new Map(tasks.map(t=>[t.startHour,t]));
+  const tasksByHour = new Map<number,Task>();
+  tasks.forEach(task=>{ for(let h=task.startHour;h<Math.min(24,task.startHour+task.durationHrs);h++) tasksByHour.set(h,task); });
   const completed = tasks.filter(t=>t.status==="COMPLETED").length;
   const progress = tasks.length ? Math.round(completed/tasks.length*100) : 0;
   const nextTask = tasks.filter(t=>t.status!=="COMPLETED" && t.startHour>=now.getHours()).sort((a,b)=>a.startHour-b.startHour)[0];
@@ -63,7 +64,7 @@ export default function Today() {
         <section className="dashboard-grid">
           <div className="day-panel">
             <div className="panel-heading"><div><span>YOUR 24 HOURS</span><h2>Today’s timeline</h2></div><button onClick={()=>setModalHour(now.getHours())}><Plus size={16}/> Add a task</button></div>
-            {loading ? <div className="dashboard-loading">Building your day...</div> : <div className="timeline-list">{Array.from({length:24},(_,hour)=>{const task=tasksByHour.get(hour); return <div key={hour} className="timeline-wrap"><HourSlot hour={hour} task={task} current={hour===now.getHours()} potentialCoins={potentialCoinsForHour(hour)} onClick={()=>task ? task.status!=="COMPLETED"&&handleComplete(task.id) : setModalHour(hour)}/>{task&&task.status!=="COMPLETED"&&<button className="timeline-focus" onClick={()=>navigate("/focus",{state:{taskId:task.id,title:task.title}})}><Timer size={13}/> Focus</button>}</div>})}</div>}
+            {loading ? <div className="dashboard-loading">Building your day...</div> : <div className="timeline-list">{Array.from({length:24},(_,hour)=>{const task=tasksByHour.get(hour); const taskStart=task?.startHour===hour; return <div key={hour} className="timeline-wrap"><HourSlot hour={hour} task={task} taskStart={taskStart} current={hour===now.getHours()} potentialCoins={potentialCoinsForHour(hour)} onClick={()=>task ? task.status!=="COMPLETED"&&handleComplete(task.id) : setModalHour(hour)}/>{task&&taskStart&&task.status!=="COMPLETED"&&<button className="timeline-focus" onClick={()=>navigate("/focus",{state:{taskId:task.id,title:task.title}})}><Timer size={13}/> Focus</button>}</div>})}</div>}
           </div>
 
           <aside className="dashboard-side">
