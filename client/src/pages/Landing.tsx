@@ -145,7 +145,7 @@ export default function Landing() {
             </div>
             <motion.div className="cinema-intro" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.8, ease }}>
               <p>Your time is already valuable. We make it visible—one planned hour, one focused session and one earned reward at a time.</p>
-              <Link className="cinema-cta" to="/signup"><span>Start your day</span><i><ArrowRight size={18} /></i></Link>
+              <Link className="cinema-cta" to="/login"><span>Start your day</span><i><ArrowRight size={18} /></i></Link>
             </motion.div>
           </div>
         </div>
