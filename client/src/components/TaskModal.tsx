@@ -18,6 +18,7 @@ export default function TaskModal({ hour,onClose,onCreate }:Props) {
   const [difficulty,setDifficulty]=useState<"SHORT"|"MEDIUM"|"DIFFICULT">("SHORT");
   const [saving,setSaving]=useState(false);
   const dialRef=useRef<HTMLDivElement>(null);
+  const draggingPointer=useRef<number|null>(null);
 
   function updateDial(clientX:number,clientY:number) {
     const rect=dialRef.current?.getBoundingClientRect(); if(!rect) return;
@@ -27,7 +28,21 @@ export default function TaskModal({ hour,onClose,onCreate }:Props) {
     if(activeHandle==="start") { chosen=Math.min(chosen,22); setStartHour(chosen); if(chosen>=endHour)setEndHour(chosen+1); else if(endHour-chosen>12)setEndHour(chosen+12); }
     else { let end=chosen===0?24:chosen; end=Math.max(startHour+1,Math.min(end,startHour+12,24)); setEndHour(end); }
   }
-  function handlePointer(e:React.PointerEvent<HTMLDivElement>) { e.currentTarget.setPointerCapture(e.pointerId); updateDial(e.clientX,e.clientY); }
+  function startDragging(e:React.PointerEvent<HTMLDivElement>) {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    draggingPointer.current=e.pointerId;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    updateDial(e.clientX,e.clientY);
+  }
+  function continueDragging(e:React.PointerEvent<HTMLDivElement>) {
+    if (draggingPointer.current!==e.pointerId) return;
+    updateDial(e.clientX,e.clientY);
+  }
+  function stopDragging(e:React.PointerEvent<HTMLDivElement>) {
+    if (draggingPointer.current!==e.pointerId) return;
+    draggingPointer.current=null;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+  }
   async function handleSubmit(e:React.FormEvent) { e.preventDefault(); if(!title.trim())return; setSaving(true); try{await onCreate({title:title.trim(),category:category.trim()||"custom",startHour,durationHrs:endHour-startHour,difficulty});onClose();}finally{setSaving(false);} }
 
   const startAngle=startHour*15, endAngle=endHour*15;
@@ -37,7 +52,7 @@ export default function TaskModal({ hour,onClose,onCreate }:Props) {
       <header><span><Clock3 size={15}/> SHAPE THIS TIME</span><h2>When will you work?</h2><p>Choose a start, then rotate the end hand around the dial.</p></header>
       <div className="scheduler-body">
         <div className="time-dial-wrap">
-          <div ref={dialRef} className="time-dial" style={{"--start":`${startAngle}deg`,"--end":`${endAngle}deg`,"--range":`${endAngle-startAngle}deg`} as React.CSSProperties} onPointerDown={handlePointer} onPointerMove={(e)=>e.buttons===1&&updateDial(e.clientX,e.clientY)}>
+          <div ref={dialRef} className="time-dial" style={{"--start":`${startAngle}deg`,"--end":`${endAngle}deg`,"--range":`${endAngle-startAngle}deg`} as React.CSSProperties} onPointerDown={startDragging} onPointerMove={continueDragging} onPointerUp={stopDragging} onPointerCancel={stopDragging} onLostPointerCapture={()=>{draggingPointer.current=null;}}>
             {Array.from({length:24},(_,i)=><i key={i} className={i>=startHour&&i<endHour?"selected":""} style={{"--hour":i} as React.CSSProperties}><b>{i%3===0?(i||24):""}</b></i>)}
             <span className="dial-hand dial-start"/><span className="dial-hand dial-end"/><em className="dial-center"><strong>{endHour-startHour}h</strong><small>planned</small></em>
           </div>
