@@ -28,8 +28,6 @@ import {
 import { applyEquippedTheme, resolveColorMode } from '../lib/themeTokens';
 import { addDailyFocus } from '../utils/activityHeatmap';
 import {
-  loadState,
-  saveState,
   generateId,
   getTodayDateString,
   validateTask,
@@ -41,6 +39,17 @@ import {
   getPotentialCoinsForTask,
 } from '../utils/time';
 import type { TaskCategory } from '../types';
+import { applyUiPrefs, extractUiPrefs, loadUiPrefs, saveUiPrefs } from '../lib/uiPrefs';
+import {
+  completeRemoteTask,
+  createRemoteTask,
+  deleteRemoteTask,
+  endRemoteFocus,
+  fetchRemoteData,
+  startRemoteFocus,
+  updateRemoteTask,
+} from '../lib/appApi';
+import { isApiConfigured } from '../lib/supabaseConfig';
 
 type Action =
   | { type: 'HYDRATE'; payload: AppState }
@@ -314,10 +323,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const userId = user?.uid ?? null;
   const prevUserId = useRef<string | null | undefined>(undefined);
+  const remoteFocusSessionId = useRef<string | null>(null);
+  const syncingRemote = useRef(false);
 
   const [state, dispatch] = useReducer(reducer, null, () => {
-    const saved = loadState(userId);
-    return saved || createInitialState(false);
+    const prefs = loadUiPrefs(userId);
+    return applyUiPrefs(createInitialState(false), prefs);
   });
   const [toasts, setToasts] = useReducer(
     (current: ToastMessage[], action: { type: 'add'; toast: ToastMessage } | { type: 'dismiss'; id: string }) => {
@@ -330,30 +341,52 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (prevUserId.current === userId) return;
     prevUserId.current = userId;
+    remoteFocusSessionId.current = null;
 
-    const saved = loadState(userId);
-    if (saved) {
-      dispatch({ type: 'HYDRATE', payload: saved });
-    } else if (user) {
-      dispatch({
-        type: 'HYDRATE',
-        payload: {
-          ...createInitialState(false),
-          profile: {
-            name: user.displayName || 'User',
-            avatar: user.photoURL || '',
-            initials: (user.displayName || 'U')
-              .split(' ')
-              .map((w) => w[0])
-              .join('')
-              .slice(0, 2)
-              .toUpperCase(),
-            email: user.email || undefined,
-            googleId: user.uid,
-          },
+    const prefs = loadUiPrefs(userId);
+    let nextState = applyUiPrefs(createInitialState(false), prefs);
+
+    if (user) {
+      nextState = {
+        ...nextState,
+        profile: {
+          name: user.displayName || 'User',
+          avatar: user.photoURL || '',
+          initials: (user.displayName || 'U')
+            .split(' ')
+            .map((w) => w[0])
+            .join('')
+            .slice(0, 2)
+            .toUpperCase(),
+          email: user.email || undefined,
         },
-      });
+      };
     }
+
+    dispatch({ type: 'HYDRATE', payload: nextState });
+
+    if (!user || !isApiConfigured()) return;
+
+    syncingRemote.current = true;
+    const today = getTodayDateString();
+    fetchRemoteData(today)
+      .then((remote) => {
+        if (!remote) return;
+        dispatch({
+          type: 'HYDRATE',
+          payload: {
+            ...nextState,
+            tasks: remote.tasks,
+            walletBalance: remote.walletBalance,
+            transactions: remote.transactions,
+            streak: remote.streakDays,
+          },
+        });
+      })
+      .catch((err) => console.warn('[Twenty Four] Failed to sync remote data:', err))
+      .finally(() => {
+        syncingRemote.current = false;
+      });
   }, [userId, user]);
 
   useEffect(() => {
@@ -364,15 +397,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
           name: user.displayName,
           avatar: user.photoURL,
           email: user.email,
-          googleId: user.uid,
         },
       });
     }
   }, [user?.uid, user?.displayName, user?.photoURL, user?.email]);
 
   useEffect(() => {
-    saveState(state, userId);
-  }, [state, userId]);
+    saveUiPrefs(extractUiPrefs(state), userId);
+  }, [
+    userId,
+    state.onboardingComplete,
+    state.hasSeenLanding,
+    state.equippedTheme,
+    state.equippedAvatar,
+    state.customThemeColors,
+    state.ownedRewards,
+    state.settings.colorMode,
+    state.settings.reducedMotion,
+    state.settings.motionIntensity,
+    state.settings.soundEnabled,
+    state.settings.reminders,
+  ]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', state.equippedTheme);
@@ -445,6 +490,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const error = validateTask(state.tasks, taskData as Omit<Task, 'id' | 'createdAt' | 'completed'>);
       if (error) return error;
 
+      if (isApiConfigured() && user) {
+        void createRemoteTask(taskData).then((remoteTask) => {
+          if (!remoteTask) return;
+          dispatch({ type: 'ADD_TASK', payload: remoteTask });
+        }).catch((err) => console.warn('[Twenty Four] Failed to create task:', err));
+        return null;
+      }
+
       const task: Task = {
         ...taskData,
         id: generateId(),
@@ -454,22 +507,43 @@ export function AppProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'ADD_TASK', payload: task });
       return null;
     },
-    [state.tasks, today]
+    [state.tasks, today, user]
   );
 
   const updateTask = useCallback(
     (task: Task) => {
       const error = validateTask(state.tasks, task, task.id);
       if (error) return error;
+
+      if (isApiConfigured() && user) {
+        void updateRemoteTask(task.id, {
+          name: task.name,
+          category: task.category,
+          startHour: task.startHour,
+          duration: task.duration,
+        })
+          .then((remoteTask) => {
+            if (!remoteTask) return;
+            dispatch({ type: 'UPDATE_TASK', payload: remoteTask });
+          })
+          .catch((err) => console.warn('[Twenty Four] Failed to update task:', err));
+        return null;
+      }
+
       dispatch({ type: 'UPDATE_TASK', payload: task });
       return null;
     },
-    [state.tasks]
+    [state.tasks, user]
   );
 
   const deleteTask = useCallback((id: string) => {
     dispatch({ type: 'DELETE_TASK', payload: id });
-  }, []);
+    if (isApiConfigured() && user) {
+      void deleteRemoteTask(id).catch((err) =>
+        console.warn('[Twenty Four] Failed to delete task:', err)
+      );
+    }
+  }, [user]);
 
   const completeTask = useCallback(
     (id: string) => {
@@ -477,9 +551,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (!task || task.completed) return 0;
       const bonus = getCompletionBonus(getDifficulty(task.duration, task.category));
       dispatch({ type: 'COMPLETE_TASK', payload: id });
+
+      if (isApiConfigured() && user) {
+        void completeRemoteTask(id)
+          .then(() => fetchRemoteData(today))
+          .then((remote) => {
+            if (!remote) return;
+            dispatch({
+              type: 'HYDRATE',
+              payload: {
+                ...state,
+                tasks: remote.tasks,
+                walletBalance: remote.walletBalance,
+                transactions: remote.transactions,
+                streak: remote.streakDays,
+              },
+            });
+          })
+          .catch((err) => console.warn('[Twenty Four] Failed to complete task:', err));
+      }
+
       return bonus;
     },
-    [state.tasks]
+    [state, state.tasks, today, user]
   );
 
   const rescheduleTask = useCallback(
@@ -498,9 +592,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const startFocus = useCallback(
     (taskId: string) => {
       const task = state.tasks.find((t) => t.id === taskId);
-      if (task) dispatch({ type: 'START_FOCUS', payload: task });
+      if (task) {
+        dispatch({ type: 'START_FOCUS', payload: task });
+        if (isApiConfigured() && user) {
+          void startRemoteFocus(taskId)
+            .then((sessionId) => {
+              remoteFocusSessionId.current = sessionId;
+            })
+            .catch((err) => console.warn('[Twenty Four] Failed to start focus session:', err));
+        }
+      }
     },
-    [state.tasks]
+    [state.tasks, user]
   );
 
   const getFocusElapsed = useCallback(() => {
@@ -525,9 +628,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
         type: 'END_FOCUS',
         payload: { earned, completed: markComplete, focusMinutes: elapsed >= 60 ? focusMinutes : 0 },
       });
+
+      const sessionId = remoteFocusSessionId.current;
+      remoteFocusSessionId.current = null;
+      if (isApiConfigured() && user && sessionId) {
+        void endRemoteFocus(sessionId)
+          .then(() => fetchRemoteData(today))
+          .then((remote) => {
+            if (!remote) return;
+            dispatch({
+              type: 'HYDRATE',
+              payload: {
+                ...state,
+                focusSession: null,
+                tasks: remote.tasks,
+                walletBalance: remote.walletBalance,
+                transactions: remote.transactions,
+                streak: remote.streakDays,
+              },
+            });
+          })
+          .catch((err) => console.warn('[Twenty Four] Failed to end focus session:', err));
+      }
+
       return earned;
     },
-    [state.focusSession, getFocusElapsed, state.settings.coinRate]
+    [state, state.focusSession, getFocusElapsed, state.settings.coinRate, today, user]
   );
 
   const purchaseItem = useCallback(

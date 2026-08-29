@@ -17,7 +17,7 @@ A gamified productivity web app where your day is represented as 24 hours. Plan 
 - **Study atmosphere** — paper texture, notebook lines, floating study icons
 - **Dark / Light / System** color modes
 - **Activity heatmap** — GitHub-style focus tracking
-- **Firebase Auth** — Google + email sign-in with per-user localStorage sync
+- **Supabase Auth** — Google + email sign-in; tasks and wallet sync via Express + Prisma API
 
 ## Stack
 
@@ -25,8 +25,8 @@ A gamified productivity web app where your day is represented as 24 hours. Plan 
 - Vite 8
 - Tailwind CSS v4
 - Framer Motion
-- Firebase Authentication
-- localStorage persistence
+- Supabase Authentication
+- Express + Prisma API (`server/`)
 
 ## Quick start
 
@@ -34,43 +34,42 @@ A gamified productivity web app where your day is represented as 24 hours. Plan 
 git clone <your-repo-url>
 cd twentyfour
 npm install
-cp .env.example .env   # required for Firebase auth
+cp .env.example .env   # required for Supabase auth
 npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173)
 
-## Firebase setup
+For full data sync, also run the API from `server/` (see `origin/main` for Prisma setup).
+
+## Supabase setup
 
 Required for sign-in and app access.
 
-1. Create a [Firebase project](https://console.firebase.google.com)
-2. Enable **Authentication → Google** and **Email/Password**
-3. Copy web config into `.env`:
+1. Create a [Supabase project](https://supabase.com)
+2. Enable **Authentication → Google** and **Email**
+3. Copy project URL and publishable key into `.env`:
 
 ```bash
 cp .env.example .env
 ```
 
-4. Add `localhost` under **Authentication → Authorized domains**
+4. Add `http://localhost:5173` to redirect URLs
 5. Restart the dev server
 
-Without Firebase configured, the login page shows a setup notice and auth forms stay disabled. Firebase Authentication is required to access the app.
+Without Supabase configured, the login page shows a setup notice and auth forms stay disabled.
 
 ## Environment variables
 
-Copy `.env.example` to `.env` and fill in your Firebase Web App config:
+Copy `.env.example` to `.env`:
 
 ```bash
-VITE_FIREBASE_API_KEY=
-VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
-VITE_FIREBASE_MESSAGING_SENDER_ID=
-VITE_FIREBASE_APP_ID=
+VITE_SUPABASE_URL=
+VITE_SUPABASE_PUBLISHABLE_KEY=
+VITE_API_URL=http://localhost:4000
 ```
 
-Create your own [Firebase project](https://console.firebase.google.com) — never commit real credentials. `.env` is gitignored; only `.env.example` belongs in the repo.
+Never commit real credentials. `.env` is gitignored; only `.env.example` belongs in the repo.
 
 ## Scripts
 
@@ -88,7 +87,7 @@ Create your own [Firebase project](https://console.firebase.google.com) — neve
 1. Connect your GitHub repo
 2. Build command: `npm run build`
 3. Output directory: `dist`
-4. Add Firebase env vars in the dashboard (if using auth)
+4. Add Supabase env vars in the dashboard (if using auth)
 
 ### GitHub Pages
 
@@ -118,7 +117,7 @@ First launch loads demo tasks, 860 coins, and sample transactions. Reset via **S
 
 ## Important notes
 
-- Per-user data is stored in `localStorage` keyed by Firebase `user.uid`
+- Tasks and wallet sync via the Prisma API when `VITE_API_URL` is set; UI prefs (theme, onboarding) use harmless localStorage
 - Do not commit `.env`, `node_modules/`, or `dist/`
 - CI runs `npm run lint` and `npm run build` on push (see `.github/workflows/ci.yml`)
 

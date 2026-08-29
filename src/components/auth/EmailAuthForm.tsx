@@ -39,7 +39,7 @@ export function EmailAuthForm({ onSuccess, className = '' }: EmailAuthFormProps)
     clearError();
 
     if (!isConfigured) {
-      setLocalError(configError || 'Firebase configuration is missing. Check your .env file.');
+      setLocalError(configError || 'Supabase configuration is missing. Check your .env file.');
       return;
     }
 

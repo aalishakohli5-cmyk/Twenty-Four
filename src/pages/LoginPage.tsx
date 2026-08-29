@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { EmailAuthForm } from '../components/auth/EmailAuthForm';
-import { FirebaseConfigNotice } from '../components/auth/FirebaseConfigNotice';
+import { SupabaseConfigNotice } from '../components/auth/SupabaseConfigNotice';
 import { LandingHeroVisual } from '../components/landing/LandingHeroVisual';
 
 export function LoginPage() {
@@ -83,7 +83,7 @@ export function LoginPage() {
             </p>
 
             <div className="rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 md:p-8 shadow-[0_0_60px_rgba(200,255,0,0.06)]">
-              <FirebaseConfigNotice />
+              <SupabaseConfigNotice />
               <EmailAuthForm onSuccess={() => navigate(destination)} />
 
               <div className="flex items-center gap-4 my-8">

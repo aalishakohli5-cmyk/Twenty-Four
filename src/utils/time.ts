@@ -1,12 +1,4 @@
-import type { AppState, Task, TaskCategory, ActivityType, Difficulty } from '../types';
-import { DEFAULT_SETTINGS } from '../data/demoData';
-
-export const STORAGE_KEY = 'twentyfour_app_state';
-export const GUEST_STORAGE_KEY = 'twentyfour_app_state_guest';
-
-export function getStorageKey(userId?: string | null): string {
-  return userId ? `${STORAGE_KEY}_${userId}` : GUEST_STORAGE_KEY;
-}
+import type { Task, TaskCategory, ActivityType, Difficulty } from '../types';
 
 export function getTodayDateString(): string {
   const d = new Date();
@@ -192,33 +184,4 @@ export function getTaskAtHour(tasks: Task[], date: string, hour: number): Task |
   return getTasksForDate(tasks, date).find(
     (t) => hour >= t.startHour && hour < t.startHour + t.duration
   );
-}
-
-export function loadState(userId?: string | null): AppState | null {
-  try {
-    const raw = localStorage.getItem(getStorageKey(userId));
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as AppState;
-    return {
-      ...parsed,
-      customThemeColors: parsed.customThemeColors ?? {
-        accentLime: '#c8ff00',
-        accentOrange: '#ff5a1f',
-        accentPink: '#ff2bd6',
-      },
-      dailyStats: parsed.dailyStats ?? [],
-      equippedAvatar: parsed.equippedAvatar ?? 'shinchan',
-      settings: { ...DEFAULT_SETTINGS, ...parsed.settings },
-    };
-  } catch {
-    return null;
-  }
-}
-
-export function saveState(state: AppState, userId?: string | null): void {
-  try {
-    localStorage.setItem(getStorageKey(userId), JSON.stringify(state));
-  } catch {
-    console.warn('Failed to save state');
-  }
 }

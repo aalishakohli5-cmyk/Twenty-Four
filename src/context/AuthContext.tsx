@@ -6,18 +6,12 @@ import {
   useCallback,
   type ReactNode,
 } from 'react';
+import type { User } from '@supabase/supabase-js';
+import { requireSupabaseClient, supabase } from '../lib/supabaseClient';
 import {
-  onAuthStateChanged,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  updateProfile,
-  signOut as firebaseSignOut,
-  GoogleAuthProvider,
-  type User,
-} from 'firebase/auth';
-import { auth, isFirebaseConfigured, firebaseConfigError } from '../lib/firebase';
+  isSupabaseConfigured,
+  supabaseConfigError,
+} from '../lib/supabaseConfig';
 import { getAuthErrorMessage } from '../utils/authErrors';
 
 export interface AuthUser {
@@ -44,49 +38,61 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 function mapUser(user: User): AuthUser {
+  const metadata = user.user_metadata as { full_name?: string; avatar_url?: string } | undefined;
   return {
-    uid: user.uid,
+    uid: user.id,
     email: user.email || '',
-    displayName: user.displayName || user.email?.split('@')[0] || 'User',
-    photoURL: user.photoURL || '',
+    displayName:
+      metadata?.full_name ||
+      user.email?.split('@')[0] ||
+      'User',
+    photoURL: metadata?.avatar_url || '',
   };
 }
 
-function requireAuth() {
-  if (!auth) {
-    throw new Error(firebaseConfigError || 'Firebase is not configured. Check your .env file.');
+function requireSupabase() {
+  if (!isSupabaseConfigured) {
+    throw new Error(supabaseConfigError || 'Supabase is not configured. Check your .env file.');
   }
-  return auth;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(isFirebaseConfigured);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!auth) {
+    if (!isSupabaseConfigured || !supabase) {
       setLoading(false);
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser ? mapUser(firebaseUser) : null);
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ? mapUser(data.session.user) : null);
       setLoading(false);
     });
 
-    return unsubscribe;
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ? mapUser(session.user) : null);
+      setLoading(false);
+    });
+
+    return () => listener.subscription.unsubscribe();
   }, []);
 
   const clearError = useCallback(() => setError(null), []);
 
   const signInWithGoogle = useCallback(async () => {
     try {
-      const firebaseAuth = requireAuth();
+      requireSupabase();
       setError(null);
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: 'select_account' });
-      await signInWithPopup(firebaseAuth, provider);
+      const { error: authError } = await requireSupabaseClient().auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/login`,
+        },
+      });
+      if (authError) throw authError;
     } catch (err) {
       const message = getAuthErrorMessage(err);
       setError(message);
@@ -96,9 +102,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithEmail = useCallback(async (email: string, password: string) => {
     try {
-      const firebaseAuth = requireAuth();
+      requireSupabase();
       setError(null);
-      await signInWithEmailAndPassword(firebaseAuth, email.trim(), password);
+      const { error: authError } = await requireSupabaseClient().auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (authError) throw authError;
     } catch (err) {
       const message = getAuthErrorMessage(err);
       setError(message);
@@ -109,18 +119,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUpWithEmail = useCallback(
     async (email: string, password: string, displayName?: string) => {
       try {
-        const firebaseAuth = requireAuth();
+        requireSupabase();
         setError(null);
-        const credential = await createUserWithEmailAndPassword(
-          firebaseAuth,
-          email.trim(),
-          password
-        );
-
         const name = displayName?.trim();
-        if (name) {
-          await updateProfile(credential.user, { displayName: name });
-        }
+        const { error: authError } = await requireSupabaseClient().auth.signUp({
+          email: email.trim(),
+          password,
+          options: name ? { data: { full_name: name } } : undefined,
+        });
+        if (authError) throw authError;
       } catch (err) {
         const message = getAuthErrorMessage(err);
         setError(message);
@@ -132,9 +139,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const resetPassword = useCallback(async (email: string) => {
     try {
-      const firebaseAuth = requireAuth();
+      requireSupabase();
       setError(null);
-      await sendPasswordResetEmail(firebaseAuth, email.trim());
+      const { error: authError } = await requireSupabaseClient().auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/login`,
+      });
+      if (authError) throw authError;
     } catch (err) {
       const message = getAuthErrorMessage(err);
       setError(message);
@@ -143,9 +153,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    if (!auth) return;
+    if (!isSupabaseConfigured || !supabase) return;
     setError(null);
-    await firebaseSignOut(auth);
+    await supabase.auth.signOut();
   }, []);
 
   return (
@@ -153,14 +163,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         loading,
-        isConfigured: isFirebaseConfigured,
+        isConfigured: isSupabaseConfigured,
         signInWithGoogle,
         signInWithEmail,
         signUpWithEmail,
         resetPassword,
         signOut,
         error,
-        configError: firebaseConfigError,
+        configError: supabaseConfigError,
         clearError,
       }}
     >
