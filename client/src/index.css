@@ -751,5 +751,50 @@ html[data-theme="light"] .dash-account button:hover {
 @media(max-width:1050px){.focus-layout{grid-template-columns:1fr}.focus-sidebar{display:grid;grid-template-columns:repeat(2,1fr)}.focus-task-list{max-height:14rem}}
 @media(max-width:720px){.focus-workspace-main{padding:1.5rem .9rem 6rem}.focus-workspace-header{flex-direction:column}.focus-header-actions{width:100%}.focus-header-actions>div,.focus-header-actions>button{flex:1}.focus-layout{display:block}.focus-sidebar{display:flex;margin-top:1rem}.focus-engine{min-height:auto;padding:1rem}.focus-preset-row{grid-template-columns:repeat(2,1fr)}.focus-clock-stage{width:min(20rem,88vw)}.focus-controls{flex-direction:column}.focus-controls button,.focus-controls .focus-primary{width:100%;min-width:0}.focus-session-meta{flex-wrap:wrap}.focus-insights>div{grid-template-columns:1fr}.focus-insights>header{align-items:flex-start;flex-direction:column}.focus-workspace-header h1{font-size:2.8rem}.focus-zen .focus-engine{min-height:auto}}
 
+/* Settings — polished light mode */
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-main{color:#1c2430;background:radial-gradient(circle at 92% 5%,#e0a83424,transparent 24rem),radial-gradient(circle at 10% 90%,#2e698014,transparent 28rem)}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-header .dashboard-eyebrow{color:#8a6509}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-header h1{color:#243142;text-shadow:none}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-header p{color:#5c6674}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-user{border-color:#54432329;background:#ffffffc7;box-shadow:0 12px 30px #41301814,inset 0 1px #fff}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-user>svg{color:#a87708}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-user small{color:#767d86}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-user strong{color:#1d2734}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .appearance-settings-card{border-color:#343f4b24;background:linear-gradient(145deg,#fffffff0,#f8f4ebeb);box-shadow:0 18px 42px #42331e14,inset 0 1px #fff}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .appearance-icon{background:#f4e8c9;color:#926800}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .appearance-settings-card small{color:#737b86}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .appearance-settings-card h2{color:#1e2937}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .appearance-settings-card p{color:#5d6774}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .appearance-settings-card button{border-color:#1f29372e;background:#243142;color:#fff9e9;box-shadow:0 7px 18px #1e293729}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .appearance-settings-card button:hover{border-color:#9a710c;background:#354459}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-settings-card{border-color:#343f4b24;background:radial-gradient(circle at 100% 0%,#e0a8342b,transparent 24rem),linear-gradient(145deg,#fff,#f7f2e8);box-shadow:0 24px 55px #3e2f1b1a,inset 0 1px #fff}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-settings-card.is-paused{border-color:#23845d4d;background:radial-gradient(circle at 100% 0%,#4abe8b2e,transparent 24rem),linear-gradient(145deg,#fbfffd,#edf8f2)}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-status-icon{background:#f2e5c5;color:#956b04}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .is-paused .pause-status-icon{background:#d9f2e6;color:#187a55}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-intro>span{color:#8d6605}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .is-paused .pause-intro>span{color:#187a55}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-intro h2{color:#1d2937}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-intro p{color:#596574}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-controls,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .active-pause-panel{border-top-color:#25314021}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-controls legend,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-controls label>span{color:#55616f;font-weight:650}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-controls fieldset button{border-color:#2431422b;background:#ffffffc7;color:#283545}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-controls fieldset button:hover{border-color:#9168057a;background:#fff9e9}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-controls fieldset button.selected{border-color:#b18419;background:#f5e8c4;color:#705000;box-shadow:inset 0 0 0 1px #b184191a}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-controls fieldset small{color:#69727d}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-controls select{border-color:#2431422e;background:#fff;color:#243142;box-shadow:0 5px 15px #3026180d}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-controls select:focus{border-color:#a77b14;box-shadow:0 0 0 3px #c5952424}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .activate-pause{background:#243142;color:#fff8e8;box-shadow:0 10px 24px #1e29372e}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .activate-pause:hover{background:#354459;transform:translateY(-1px)}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .active-pause-panel>div>svg{color:#197b57}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .active-pause-panel small,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .active-pause-panel em{color:#5f6d68}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .active-pause-panel strong{color:#176b4d}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .active-pause-panel>button{background:#267c5c;color:#fff}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-saved{color:#176c4d;font-weight:650}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-policy{border-color:#2e3a4738;background:#ffffff94;color:#946b08}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-policy strong{color:#263342}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .pause-policy p{color:#5c6875}
+html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .settings-main .market-message{border-left-color:#b5493d;background:#b5493d14;color:#8d3028}
+@media(max-width:700px){html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .appearance-settings-card{align-items:flex-start;flex-direction:column}}
+
 /* Focus Studio light-mode compatibility */
 html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-workspace-header h1{color:#8b6500;text-shadow:none}html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-workspace-header p,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-workspace-header>div:first-child>button{color:#1717178a}html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-engine,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-sidebar>section,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-insights{border-color:#1717171c;background:linear-gradient(145deg,#fff,#f6f1e7);box-shadow:inset 0 1px #fff,0 22px 50px #5a473318}html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-engine-top h2,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-clock-copy>strong,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-sidebar header strong,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-insights header strong,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-task-list>button strong,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-insights article>strong{color:#171717}html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-preset-row>button,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .custom-preset,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-task-list>button,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-week-strip>span,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-insights article,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-header-actions>div,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-header-actions>button{border-color:#17171714;background:#17171706;color:#171717}html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-preset-row>button>span,html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .custom-preset input{color:#171717}html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-ring-track{stroke:#17171712}html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-progress-ring line{stroke:#17171735}html[data-theme="light"]:not([data-dashboard-theme="aurora"]) .focus-controls button{border-color:#17171720;color:#171717;background:#17171708}
