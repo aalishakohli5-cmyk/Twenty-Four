@@ -1,67 +1,77 @@
-# TWENTY FOUR
+# TWENTY FOUR | Time = Money
 
 **Every hour has value.**
 
-A gamified productivity web app where your day is represented as 24 hours. Plan tasks, focus deeply, earn virtual coins, unlock themes and companions in The Vault.
+A gamified productivity app where your day is represented as 24 hours. Plan tasks, focus deeply, earn virtual coins, and unlock themes and companions in The Vault.
 
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
+## The problem
 
-## Features
+Traditional to-do lists show what is unfinished, but they rarely help users understand where their time went. For people who procrastinate or struggle with consistency, an endless list can quickly become discouraging.
 
-- **24-hour timeline** — tap any open slot to plan; coin rewards per hour
-- **Focus mode** — draggable focus bar, Picture-in-Picture pin (Chrome/Edge), immersive arc timer
-- **The Vault** — themes + anime companions (free Shinchan included)
-- **Companions** — small draggable avatars that track your cursor
-- **Study atmosphere** — paper texture, notebook lines, floating study icons
-- **Dark / Light / System** color modes
-- **Activity heatmap** — GitHub-style focus tracking
-- **Supabase Auth** — Google + email sign-in; tasks and wallet sync via Express + Prisma API
+## Our solution
+
+**Plan → Focus → Earn → Unlock**
+
+- Plan tasks inside a visible 24-hour day
+- Start focused work sessions connected to real tasks
+- Earn coins for focus time and task completion
+- Track progress through a wallet and daily report
+- Spend earned coins on unlockable themes and rewards
+
+## Key features
+
+- Cinematic, animated landing experience
+- 24-hour timeline with coin rewards per hour
+- Focus mode with draggable taskbar and Picture-in-Picture
+- The Vault — themes, backgrounds, and companions
+- Dark / light / system color modes
+- Activity heatmap and insights
+- Supabase sign-up and login
+- Express + Prisma API for tasks, wallet, focus, and rewards
 
 ## Stack
 
-- React 19 + TypeScript
-- Vite 8
-- Tailwind CSS v4
-- Framer Motion
-- Supabase Authentication
-- Express + Prisma API (`server/`)
+| Layer | Tech |
+| --- | --- |
+| Frontend | React 19, Vite 8, TypeScript, Tailwind CSS v4, Framer Motion |
+| Backend | Node.js, Express, TypeScript |
+| Database | Supabase Postgres |
+| Auth | Supabase Auth |
+| ORM | Prisma |
+
+## Project structure
+
+```
+client/          # Twenty Four frontend (Vite + React)
+server/          # Express API + Prisma
+```
 
 ## Quick start
 
+### Frontend
+
 ```bash
-git clone <your-repo-url>
-cd twentyfour
+cd client
 npm install
-cp .env.example .env   # required for Supabase auth
+cp .env.example .env
 npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173)
 
-For full data sync, also run the API from `server/` (see `origin/main` for Prisma setup).
-
-## Supabase setup
-
-Required for sign-in and app access.
-
-1. Create a [Supabase project](https://supabase.com)
-2. Enable **Authentication → Google** and **Email**
-3. Copy project URL and publishable key into `.env`:
+### Backend (optional, for data sync)
 
 ```bash
-cp .env.example .env
+cd server
+npm install
+cp .env.example .env   # DATABASE_URL, SUPABASE_URL, SUPABASE_SECRET_KEY
+npx prisma migrate dev
+npm run dev
 ```
-
-4. Add `http://localhost:5173` to redirect URLs
-5. Restart the dev server
-
-Without Supabase configured, the login page shows a setup notice and auth forms stay disabled.
 
 ## Environment variables
 
-Copy `.env.example` to `.env`:
+**Client** (`client/.env`):
 
 ```bash
 VITE_SUPABASE_URL=
@@ -69,57 +79,25 @@ VITE_SUPABASE_PUBLISHABLE_KEY=
 VITE_API_URL=http://localhost:4000
 ```
 
-Never commit real credentials. `.env` is gitignored; only `.env.example` belongs in the repo.
+**Server** (`server/.env`): see `server/.env.example`
+
+Never commit real credentials. `.env` files are gitignored.
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server |
-| `npm run build` | Production build → `dist/` |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run oxlint |
+| Location | Command | Description |
+| --- | --- | --- |
+| `client/` | `npm run dev` | Start frontend dev server |
+| `client/` | `npm run build` | Production build |
+| `client/` | `npm run lint` | Run oxlint |
+| `server/` | `npm run dev` | Start API server |
+| `server/` | `npm run build` | Compile TypeScript |
+| `server/` | `npm run grant-coins` | Grant trial coins by email |
 
 ## Deploy
 
-### Vercel / Netlify / Cloudflare Pages
-
-1. Connect your GitHub repo
-2. Build command: `npm run build`
-3. Output directory: `dist`
-4. Add Supabase env vars in the dashboard (if using auth)
-
-### GitHub Pages
-
-Set `base` in `vite.config.ts` to your repo name, then:
-
-```bash
-npm run build
-# deploy dist/ to gh-pages branch
-```
-
-## Project structure
-
-```
-src/
-├── components/   # UI, timeline, focus bar, avatars, store
-├── context/      # App state, auth, motion
-├── data/         # Demo data, store items, avatars
-├── hooks/        # Focus timer, PiP, draggable panels
-├── layouts/      # App shell
-├── pages/        # Routes
-└── utils/        # Time, persistence, heatmap
-```
-
-## Demo data
-
-First launch loads demo tasks, 860 coins, and sample transactions. Reset via **Settings → Reset All Data**.
-
-## Important notes
-
-- Tasks and wallet sync via the Prisma API when `VITE_API_URL` is set; UI prefs (theme, onboarding) use harmless localStorage
-- Do not commit `.env`, `node_modules/`, or `dist/`
-- CI runs `npm run lint` and `npm run build` on push (see `.github/workflows/ci.yml`)
+- **Frontend:** Vercel / Netlify — root directory `client/`, build `npm run build`, output `dist/`
+- **Backend:** Render / Railway — root directory `server/`
 
 ## License
 

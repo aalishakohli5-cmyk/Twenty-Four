@@ -11,6 +11,7 @@ lerna-debug.log*
 node_modules/
 dist/
 dist-ssr/
+build/
 coverage/
 
 # Vite / tooling caches
@@ -18,10 +19,11 @@ coverage/
 .cache/
 *.tsbuildinfo
 
-# Environment (keep example)
+# Environment (keep examples)
 .env
 .env.*
 !.env.example
+!**/.env.example
 
 # Local overrides
 *.local
@@ -46,3 +48,6 @@ Desktop.ini
 *.njsproj
 *.sln
 *.sw?
+
+# Deploy
+.vercel

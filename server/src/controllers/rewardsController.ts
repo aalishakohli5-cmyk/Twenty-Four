@@ -3,7 +3,12 @@ import { prisma } from "../lib/prisma";
 import { AuthedRequest } from "../middleware/auth";
 
 export async function listRewards(req: AuthedRequest, res: Response) {
-  const rewards = await prisma.reward.findMany({ orderBy: { priceCoins: "asc" } });
+  const aurora = await prisma.reward.upsert({
+    where: { name: "Aurora" },
+    update: { category: "theme", priceCoins: 200, description: "Animated dark-green and neon aurora theme across the complete dashboard." },
+    create: { name: "Aurora", category: "theme", priceCoins: 200, description: "Animated dark-green and neon aurora theme across the complete dashboard." },
+  });
+  const rewards = [aurora];
   const owned = await prisma.userReward.findMany({
     where: { profileId: req.userId! },
   });
@@ -19,8 +24,6 @@ export async function listRewards(req: AuthedRequest, res: Response) {
   });
 }
 
-// Unlocked rewards stay permanently available once bought (product doc
-// section 6): this only ever inserts a UserReward row once.
 export async function purchaseReward(req: AuthedRequest, res: Response) {
   const { rewardId } = req.body;
 
@@ -77,6 +80,17 @@ export async function activateReward(req: AuthedRequest, res: Response) {
       data: { active: true },
     }),
   ]);
+
+  res.json({ ok: true });
+}
+
+export async function deactivateRewardCategory(req: AuthedRequest, res: Response) {
+  const category = typeof req.body.category === "string" ? req.body.category : "theme";
+
+  await prisma.userReward.updateMany({
+    where: { profileId: req.userId!, reward: { category } },
+    data: { active: false },
+  });
 
   res.json({ ok: true });
 }

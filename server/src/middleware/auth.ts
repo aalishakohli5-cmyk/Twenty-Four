@@ -8,18 +8,11 @@ export interface AuthedRequest extends Request {
   userEmail?: string;
 }
 
-// Server-side Supabase client using the secret key — this can call
-// supabase.auth.getUser() to validate any user's access token, which works
-// regardless of whether the project uses legacy JWT secrets or the newer
-// asymmetric (JWKS) signing keys. No manual JWT decoding needed.
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_SECRET_KEY as string
 );
 
-// Verifies the Supabase-issued access token sent from the client as
-// "Authorization: Bearer <access_token>" and ensures a matching
-// Profile row exists (created on first request).
 export async function requireAuth(
   req: AuthedRequest,
   res: Response,
