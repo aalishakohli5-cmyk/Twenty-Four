@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { CalendarClock, Check, CircleUserRound, MoonStar, PauseCircle, Play, ShieldCheck, Sun } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
@@ -47,7 +46,10 @@ export default function Settings() {
 
     <section className="appearance-settings-card">
       <div><span className="appearance-icon">{theme === "dark" ? <MoonStar/> : <Sun/>}</span><div><small>APPEARANCE</small><h2>{theme === "dark" ? "Dark mode" : "Light mode"}</h2><p>Switch the base interface while keeping your unlocked marketplace theme.</p></div></div>
-      <button type="button" onClick={toggleTheme} aria-label="Toggle dark and light mode"><DotLottieReact src="/theme-toggle.json" autoplay loop style={{width:"44px",height:"44px",pointerEvents:"none"}}/><span>Use {theme === "dark" ? "light" : "dark"}</span></button>
+      <button className="theme-mode-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`} aria-pressed={theme === "light"}>
+        <span className="theme-mode-track" aria-hidden="true"><i>{theme === "dark" ? <MoonStar/> : <Sun/>}</i></span>
+        <span>Use {theme === "dark" ? "light" : "dark"}</span>
+      </button>
     </section>
 
     {error && <div className="market-message" role="alert">{error}</div>}
