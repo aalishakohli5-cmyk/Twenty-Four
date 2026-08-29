@@ -35,7 +35,7 @@ export default function Settings() {
               aria-label="Toggle dark and light mode"
             >
              <DotLottieReact
-  src="https://lottie.host/embed/8611f550-e563-4ec8-90dd-1d120bcf4d9c/CcZQfwftJk.json"
+  src="/theme-toggle.json"
   autoplay
   loop
   style={{
