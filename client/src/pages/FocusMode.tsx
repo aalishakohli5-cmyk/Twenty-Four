@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import { api } from "../lib/api";
 
 // Estimate only — the real total is always recomputed server-side when the
@@ -79,6 +80,7 @@ export default function FocusMode() {
         .tf-mint { animation: tf-mint 0.7s ease-out forwards; }
       `}</style>
 
+      <Navbar />
       <main className="mx-auto flex max-w-md flex-col items-center px-4 py-14 text-center">
         <p className="mb-1 text-sm text-cream/50">
           {result ? "Session complete" : running ? "Focusing on" : "Ready to focus on"}
