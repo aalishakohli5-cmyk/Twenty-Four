@@ -554,3 +554,161 @@ html[data-theme="light"] .bg-white\/10 {
 html[data-theme="light"] .hover\:bg-white\/10:hover {
   background-color: rgba(0, 0, 0, 0.10);
 }
+
+/* ========================================
+   TODAY PAGE — LIGHT MODE
+   ======================================== */
+
+html[data-theme="light"] .dashboard-shell {
+  background: #f7f4ec;
+  color: #171717;
+}
+
+html[data-theme="light"] .dashboard-main {
+  color: #171717;
+}
+
+html[data-theme="light"] .dashboard-header h1,
+html[data-theme="light"] .dashboard-header p,
+html[data-theme="light"] .dashboard-header span,
+html[data-theme="light"] .dashboard-header em {
+  color: #171717;
+}
+
+html[data-theme="light"] .dashboard-stats article,
+html[data-theme="light"] .day-panel,
+html[data-theme="light"] .next-card,
+html[data-theme="light"] .value-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #171717;
+}
+
+html[data-theme="light"] .dashboard-stats small,
+html[data-theme="light"] .dashboard-side p,
+html[data-theme="light"] .value-card p {
+  color: rgba(23, 23, 23, 0.55);
+}
+
+html[data-theme="light"] .dashboard-stats strong,
+html[data-theme="light"] .dashboard-side h3,
+html[data-theme="light"] .value-card strong,
+html[data-theme="light"] .value-card small {
+  color: #171717;
+}
+
+html[data-theme="light"] .panel-heading span,
+html[data-theme="light"] .panel-heading h2 {
+  color: #171717;
+}
+
+html[data-theme="light"] .dashboard-loading {
+  color: rgba(23, 23, 23, 0.55);
+}
+
+html[data-theme="light"] .dashboard-grid-light {
+  opacity: 0.35;
+}
+
+/* ========================================
+   RULES PAGE — LIGHT MODE
+   ======================================== */
+
+html[data-theme="light"] .rules-shell {
+  background: #f7f4ec;
+  color: #171717;
+}
+
+html[data-theme="light"] .rules-main {
+  color: #171717;
+}
+
+html[data-theme="light"] .rules-header h1,
+html[data-theme="light"] .rules-header em,
+html[data-theme="light"] .rules-header p {
+  color: #171717;
+}
+
+html[data-theme="light"] .rules-header p {
+  color: rgba(23, 23, 23, 0.55);
+}
+
+html[data-theme="light"] .rules-preview article {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #171717;
+}
+
+html[data-theme="light"] .rules-preview article h2,
+html[data-theme="light"] .rules-preview article p,
+html[data-theme="light"] .rules-preview article span {
+  color: #171717;
+}
+
+html[data-theme="light"] .rules-preview article p {
+  color: rgba(23, 23, 23, 0.55);
+}
+
+html[data-theme="light"] .rules-coming {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #171717;
+}
+
+html[data-theme="light"] .rules-coming strong {
+  color: #171717;
+}
+
+html[data-theme="light"] .rules-coming p {
+  color: rgba(23, 23, 23, 0.55);
+}
+
+/* ========================================
+   NAVBAR — LIGHT MODE
+   ======================================== */
+
+html[data-theme="light"] .dash-nav {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #171717;
+}
+
+html[data-theme="light"] .dash-brand,
+html[data-theme="light"] .dash-brand strong {
+  color: #171717;
+}
+
+html[data-theme="light"] .dash-nav-link {
+  color: rgba(23, 23, 23, 0.55);
+}
+
+html[data-theme="light"] .dash-nav-link:hover {
+  color: #171717;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme="light"] .dash-nav-link.active {
+  color: #171717;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .dash-account {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="light"] .dash-account strong {
+  color: #171717;
+}
+
+html[data-theme="light"] .dash-account small {
+  color: rgba(23, 23, 23, 0.5);
+}
+
+html[data-theme="light"] .dash-account button {
+  color: rgba(23, 23, 23, 0.55);
+}
+
+html[data-theme="light"] .dash-account button:hover {
+  color: #171717;
+  background: rgba(0, 0, 0, 0.05);
+}
