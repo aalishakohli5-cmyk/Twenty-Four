@@ -6,7 +6,7 @@ const links = [
   { to: "/today", label: "My day", icon: CalendarDays },
   { to: "/focus", label: "Focus", icon: Timer },
   { to: "/wallet", label: "Wallet", icon: WalletCards },
-  { to: "/store", label: "Rewards", icon: Gift },
+  { to: "/store", label: "Marketplace", icon: Gift },
   { to: "/report", label: "Reports", icon: ChartNoAxesColumnIncreasing },
   { to: "/rules", label: "Rules", icon: BookOpenText },
   { to: "/settings", label: "Settings", icon: Settings },

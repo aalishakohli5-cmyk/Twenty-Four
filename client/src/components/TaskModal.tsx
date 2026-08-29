@@ -65,7 +65,7 @@ export default function TaskModal({ hour,onClose,onCreate }:Props) {
         <div className="scheduler-fields">
           <label><span>What will you do?</span><input autoFocus value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. Finish the pitch deck" required/></label>
           <label><span>Category <small>optional</small></span><input value={category} onChange={e=>setCategory(e.target.value)} placeholder="Type your own category"/></label>
-          <label><span>Difficulty</span><select value={difficulty} onChange={e=>setDifficulty(e.target.value as typeof difficulty)}><option value="SHORT">Short · +5 coins</option><option value="MEDIUM">Medium · +10 coins</option><option value="DIFFICULT">Difficult · +20 coins</option></select></label>
+          <label><span>Difficulty</span><select value={difficulty} onChange={e=>setDifficulty(e.target.value as typeof difficulty)}><option value="SHORT">Easy · +5 coins</option><option value="MEDIUM">Medium · +15 coins</option><option value="DIFFICULT">Hard · +30 coins</option></select></label>
           <div className="scheduler-actions"><button type="button" onClick={onClose}>Cancel</button><button type="submit" disabled={saving}>{saving?"Booking time...":"Book this time"}</button></div>
         </div>
       </div>
