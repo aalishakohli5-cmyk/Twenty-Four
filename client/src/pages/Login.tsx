@@ -37,8 +37,9 @@ function OrbitTwentyFour() {
         <b />
       </div>
       <div className="auth-orbit-number">
-        <span><strong>2</strong><strong>4</strong></span>
-        <small>HOURS · YOURS</small>
+        <span><strong>24</strong></span>
+        <small> HOURS ·YOURS</small>
+
       </div>
     </motion.div>
   );
