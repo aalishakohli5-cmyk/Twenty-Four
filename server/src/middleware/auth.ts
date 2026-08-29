@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { createClient } from "@supabase/supabase-js";
 import { prisma } from "../lib/prisma";
+import { SIGNUP_BONUS } from "../utils/coins";
 
 export interface AuthedRequest extends Request {
   userId?: string;
@@ -39,16 +40,27 @@ export async function requireAuth(
     req.userId = data.user.id;
     req.userEmail = data.user.email;
 
-    // Upsert a lightweight profile the first time we see this user.
-    await prisma.profile.upsert({
+    const existing = await prisma.profile.findUnique({
       where: { id: data.user.id },
-      update: {},
-      create: {
-        id: data.user.id,
-        email: data.user.email ?? `${data.user.id}@unknown.local`,
-        settings: { create: {} },
-      },
     });
+
+    if (!existing) {
+      await prisma.profile.create({
+        data: {
+          id: data.user.id,
+          email: data.user.email ?? `${data.user.id}@unknown.local`,
+          coinBalance: SIGNUP_BONUS,
+          settings: { create: {} },
+          transactions: {
+            create: {
+              type: "SIGNUP_BONUS",
+              amount: SIGNUP_BONUS,
+              note: "Welcome signup bonus",
+            },
+          },
+        },
+      });
+    }
 
     next();
   } catch (err) {

@@ -7,6 +7,8 @@ export const COMPLETION_BONUS: Record<TaskDifficulty, number> = {
   DIFFICULT: 20,
 };
 
+export const SIGNUP_BONUS = 150;
+
 export function focusCoinsForMinutes(minutes: number, perHourRate: number): number {
   return Math.floor((minutes / 60) * perHourRate);
 }

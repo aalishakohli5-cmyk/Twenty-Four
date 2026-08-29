@@ -50,6 +50,7 @@ import {
   updateRemoteTask,
 } from '../lib/appApi';
 import { isApiConfigured } from '../lib/supabaseConfig';
+import { isTrialAccount, TRIAL_ACCOUNT_COINS } from '../lib/trialAccount';
 
 type Action =
   | { type: 'HYDRATE'; payload: AppState }
@@ -401,6 +402,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
       });
     }
   }, [user?.uid, user?.displayName, user?.photoURL, user?.email]);
+
+  useEffect(() => {
+    if (!isTrialAccount(user?.email)) return;
+    if (state.walletBalance >= TRIAL_ACCOUNT_COINS) return;
+
+    dispatch({
+      type: 'ADD_COINS',
+      payload: {
+        amount: TRIAL_ACCOUNT_COINS - state.walletBalance,
+        description: 'Trial account boost',
+        type: 'bonus',
+        icon: 'bonus',
+      },
+    });
+  }, [user?.email, state.walletBalance]);
 
   useEffect(() => {
     saveUiPrefs(extractUiPrefs(state), userId);

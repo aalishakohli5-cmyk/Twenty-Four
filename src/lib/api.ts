@@ -1,12 +1,11 @@
 import { requireSupabaseClient } from './supabaseClient';
-
-const API_URL = import.meta.env.VITE_API_URL as string;
+import { getApiUrl } from './supabaseConfig';
 
 async function authedFetch(path: string, options: RequestInit = {}) {
   const { data } = await requireSupabaseClient().auth.getSession();
   const token = data.session?.access_token;
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${getApiUrl()}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',

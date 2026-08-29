@@ -83,7 +83,7 @@ export function EmailAuthForm({ onSuccess, className = '' }: EmailAuthFormProps)
   };
 
   const inputClass =
-    'w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-text-primary placeholder:text-text-secondary/50 focus:border-accent-lime/50 focus:outline-none transition-colors';
+    'auth-input w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-text-primary placeholder:text-text-secondary/50 focus:border-accent-lime/50 focus:outline-none transition-colors';
 
   return (
     <div className={className}>

@@ -9,6 +9,9 @@ const AUTH_ERROR_MESSAGES: Record<string, string> = {
 };
 
 export function getAuthErrorMessage(error: unknown): string {
+  if (error instanceof TypeError && error.message === 'Failed to fetch') {
+    return 'Cannot reach Supabase. Check your internet connection and .env values (no quotes around URLs), then restart the dev server.';
+  }
   if (error && typeof error === 'object') {
     const err = error as { code?: string; message?: string };
     if (err.code && AUTH_ERROR_MESSAGES[err.code]) {

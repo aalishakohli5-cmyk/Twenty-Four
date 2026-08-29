@@ -1,11 +1,8 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { isSupabaseConfigured } from './supabaseConfig';
-
-const url = import.meta.env.VITE_SUPABASE_URL as string;
-const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+import { getSupabasePublishableKey, getSupabaseUrl, isSupabaseConfigured } from './supabaseConfig';
 
 export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(url, publishableKey)
+  ? createClient(getSupabaseUrl(), getSupabasePublishableKey())
   : null;
 
 export function requireSupabaseClient(): SupabaseClient {

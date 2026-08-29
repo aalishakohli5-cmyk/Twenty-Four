@@ -1,17 +1,54 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Hero24Visual } from '../components/common/Hero24Visual';
 import { useApp } from '../context/AppContext';
 
 const screens = [
-  { title: 'YOUR TIME IS WORTH SOMETHING.', highlight: 'TIME' },
-  { title: '24 HOURS.\nEVERY DAY.', highlight: '24' },
-  { title: 'PLAN IT.', highlight: 'PLAN' },
-  { title: 'FOCUS.', highlight: 'FOCUS' },
-  { title: 'EARN COINS.', highlight: 'COINS' },
-  { title: 'BUILD YOUR WORLD.', highlight: 'WORLD' },
+  {
+    badge: 'main character era',
+    title: 'Your time is worth',
+    highlight: 'something.',
+    sub: 'Stop doom-scrolling. Start stacking wins — one hour at a time.',
+    showVisual: true,
+  },
+  {
+    badge: '24/7 but make it 24',
+    title: '24 hours.',
+    highlight: 'Every day.',
+    sub: 'Same clock as everyone else. Different energy when you actually plan it.',
+    showVisual: false,
+  },
+  {
+    badge: 'no cap',
+    title: 'Plan',
+    highlight: 'it.',
+    sub: 'Drop tasks into real hours. Your day stops feeling like chaos.',
+    showVisual: false,
+  },
+  {
+    badge: 'lock in',
+    title: 'Focus',
+    highlight: 'mode.',
+    sub: 'Deep work sessions that actually count — not just vibes.',
+    showVisual: false,
+  },
+  {
+    badge: 'get paid (virtually)',
+    title: 'Earn',
+    highlight: 'coins.',
+    sub: 'Focus + finish tasks = coins in your wallet. Low effort grind, high reward.',
+    showVisual: false,
+  },
+  {
+    badge: 'your world, your rules',
+    title: 'Build your',
+    highlight: 'world.',
+    sub: 'Unlock themes and companions in The Vault. Make the app feel like yours.',
+    showVisual: false,
+  },
 ];
 
 export function OnboardingPage() {
@@ -26,6 +63,7 @@ export function OnboardingPage() {
   }, [state.onboardingComplete, navigate]);
 
   const isLast = step === screens.length - 1;
+  const current = screens[step];
 
   const handleNext = () => {
     if (isLast) {
@@ -36,74 +74,93 @@ export function OnboardingPage() {
     }
   };
 
-  const current = screens[step];
-
   return (
-    <div className="min-h-screen bg-bg-primary bg-grid bg-grain flex flex-col items-center justify-center px-6 relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-lime/5 rounded-full blur-[150px]" />
-      </div>
+    <div className="onboarding-page min-h-screen bg-[#050505] text-white overflow-hidden relative flex flex-col">
+      <div className="landing-bg-base fixed inset-0" aria-hidden />
+      <div className="landing-bg-grid fixed inset-0 opacity-25" aria-hidden />
+      <div className="landing-bg-glow fixed inset-0" aria-hidden />
 
-      {step === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20"
-        >
-          <Hero24Visual size="lg" animated={false} />
-        </motion.div>
-      )}
+      <header className="relative z-10 flex items-center justify-between px-5 pt-6 md:px-10 md:pt-8">
+        <span className="font-display text-lg tracking-tight">
+          TWENTY<span className="text-[#c8ff00]">FOUR</span>
+        </span>
+        <span className="font-mono text-[11px] tracking-[0.25em] text-zinc-500">
+          {String(step + 1).padStart(2, '0')} / {String(screens.length).padStart(2, '0')}
+        </span>
+      </header>
 
-      <div className="relative z-10 w-full max-w-2xl text-center">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -30, filter: 'blur(10px)' }}
-            transition={{ duration: 0.5 }}
-          >
-            <span className="font-condensed text-xs tracking-[0.3em] text-text-secondary">
-              {String(step + 1).padStart(2, '0')} / {String(screens.length).padStart(2, '0')}
-            </span>
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mt-6 leading-[0.95] whitespace-pre-line">
-              {current.title.split(current.highlight).map((part, i, arr) => (
-                <span key={i}>
-                  {part}
-                  {i < arr.length - 1 && (
-                    <span className="text-accent-lime text-glow-lime">{current.highlight}</span>
-                  )}
-                </span>
-              ))}
-            </h1>
-          </motion.div>
-        </AnimatePresence>
-
-        <div className="flex justify-center gap-2 mt-12">
-          {screens.map((_, i) => (
-            <div
-              key={i}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                i === step ? 'w-8 bg-accent-lime' : 'w-2 bg-white/20'
-              }`}
-            />
-          ))}
-        </div>
-
-        <div className="mt-12 flex flex-col items-center gap-4">
-          <Button size="lg" onClick={handleNext}>
-            {isLast ? 'START MY 24' : 'CONTINUE'}
-          </Button>
-          {!isLast && (
-            <button
-              onClick={() => { completeOnboarding(); navigate('/app/today'); }}
-              className="text-text-secondary text-sm hover:text-text-primary transition-colors"
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-5 py-8 md:px-10">
+        <div className="w-full max-w-lg mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="rounded-[32px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 md:p-10 shadow-[0_0_80px_rgba(200,255,0,0.06)]"
             >
-              Skip intro
-            </button>
-          )}
+              {current.showVisual && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1, duration: 0.5 }}
+                  className="mb-8 flex justify-center"
+                >
+                  <div className="w-full max-w-[220px] md:max-w-[260px]">
+                    <Hero24Visual size="md" animated />
+                  </div>
+                </motion.div>
+              )}
+
+              <div className="flex justify-center mb-5">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#c8ff00]/25 bg-[#c8ff00]/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#d9ff66]">
+                  <Sparkles className="w-3 h-3" aria-hidden />
+                  {current.badge}
+                </span>
+              </div>
+
+              <h1 className="text-center font-display text-3xl md:text-5xl font-bold tracking-tight leading-[1.05]">
+                {current.title}{' '}
+                <span className="text-[#c8ff00] italic font-serif">{current.highlight}</span>
+              </h1>
+
+              <p className="mt-4 text-center text-sm md:text-base text-zinc-400 leading-relaxed max-w-md mx-auto">
+                {current.sub}
+              </p>
+
+              <div className="flex justify-center gap-2 mt-8">
+                {screens.map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      i === step ? 'w-10 bg-[#c8ff00]' : i < step ? 'w-2 bg-[#c8ff00]/40' : 'w-2 bg-white/15'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <div className="mt-8 flex flex-col items-center gap-3">
+                <Button size="lg" className="w-full max-w-xs" onClick={handleNext}>
+                  {isLast ? 'START MY 24 ✦' : 'CONTINUE →'}
+                </Button>
+                {!isLast && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      completeOnboarding();
+                      navigate('/app/today');
+                    }}
+                    className="text-zinc-500 text-xs uppercase tracking-[0.2em] hover:text-zinc-300 transition-colors"
+                  >
+                    Skip intro
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
