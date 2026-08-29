@@ -3,7 +3,12 @@ import { prisma } from "../lib/prisma";
 import { AuthedRequest } from "../middleware/auth";
 
 export async function listRewards(req: AuthedRequest, res: Response) {
-  const rewards = await prisma.reward.findMany({ orderBy: { priceCoins: "asc" } });
+  const aurora = await prisma.reward.upsert({
+    where: { name: "Aurora" },
+    update: { category: "theme", priceCoins: 200, description: "Animated dark-green and neon aurora theme across the complete dashboard." },
+    create: { name: "Aurora", category: "theme", priceCoins: 200, description: "Animated dark-green and neon aurora theme across the complete dashboard." },
+  });
+  const rewards = [aurora];
   const owned = await prisma.userReward.findMany({
     where: { profileId: req.userId! },
   });

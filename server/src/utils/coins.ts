@@ -3,8 +3,8 @@ import { TaskDifficulty } from "@prisma/client";
 // Fixed completion bonuses per the product doc (section 6).
 export const COMPLETION_BONUS: Record<TaskDifficulty, number> = {
   SHORT: 5,
-  MEDIUM: 10,
-  DIFFICULT: 20,
+  MEDIUM: 15,
+  DIFFICULT: 30,
 };
 
 export function focusCoinsForMinutes(minutes: number, perHourRate: number): number {

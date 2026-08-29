@@ -4,17 +4,13 @@ const prisma = new PrismaClient();
 
 async function main() {
   const rewards = [
-    { name: "Midnight Charcoal", category: "background", priceCoins: 200, description: "The default deep charcoal look, unlocked and free." },
-    { name: "Gold Ledger", category: "background", priceCoins: 200, description: "A financial-ledger inspired timeline background." },
-    { name: "Neon Focus", category: "theme", priceCoins: 500, description: "Neon-green accents across the whole app." },
-    { name: "Glass Taskbar", category: "taskbar", priceCoins: 800, description: "A frosted glass current-task bar." },
-    { name: "Aurora Environment", category: "background", priceCoins: 1000, description: "A special animated environment for your Today screen." },
+    { name: "Aurora", category: "theme", priceCoins: 200, description: "Animated dark-green and neon aurora theme across the complete dashboard." },
   ];
 
   for (const r of rewards) {
     await prisma.reward.upsert({
       where: { name: r.name },
-      update: {},
+      update: r,
       create: r,
     });
   }
