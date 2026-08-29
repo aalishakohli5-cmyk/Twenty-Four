@@ -1,63 +1,178 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { Session, User } from "@supabase/supabase-js";
-import { supabase } from "../lib/supabaseClient";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  type ReactNode,
+} from 'react';
+import type { User } from '@supabase/supabase-js';
+import { requireSupabaseClient, supabase } from '../lib/supabaseClient';
+import {
+  isSupabaseConfigured,
+  supabaseConfigError,
+} from '../lib/supabaseConfig';
+import { getAuthErrorMessage } from '../utils/authErrors';
 
-interface AuthContextValue {
-  session: Session | null;
-  user: User | null;
-  loading: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
-  signOut: () => Promise<void>;
+export interface AuthUser {
+  uid: string;
+  email: string;
+  displayName: string;
+  photoURL: string;
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+interface AuthContextValue {
+  user: AuthUser | null;
+  loading: boolean;
+  isConfigured: boolean;
+  signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, displayName?: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  signOut: () => Promise<void>;
+  error: string | null;
+  configError: string | null;
+  clearError: () => void;
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+function mapUser(user: User): AuthUser {
+  const metadata = user.user_metadata as { full_name?: string; avatar_url?: string } | undefined;
+  return {
+    uid: user.id,
+    email: user.email || '',
+    displayName:
+      metadata?.full_name ||
+      user.email?.split('@')[0] ||
+      'User',
+    photoURL: metadata?.avatar_url || '',
+  };
+}
+
+function requireSupabase() {
+  if (!isSupabaseConfigured) {
+    throw new Error(supabaseConfigError || 'Supabase is not configured. Check your .env file.');
+  }
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) {
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
+      setUser(data.session?.user ? mapUser(data.session.user) : null);
       setLoading(false);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ? mapUser(session.user) : null);
+      setLoading(false);
     });
 
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  async function signUp(email: string, password: string) {
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
-  }
+  const clearError = useCallback(() => setError(null), []);
 
-  async function signIn(email: string, password: string) {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-  }
+  const signInWithGoogle = useCallback(async () => {
+    try {
+      requireSupabase();
+      setError(null);
+      const { error: authError } = await requireSupabaseClient().auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/login`,
+        },
+      });
+      if (authError) throw authError;
+    } catch (err) {
+      const message = getAuthErrorMessage(err);
+      setError(message);
+      throw err;
+    }
+  }, []);
 
-  async function signInWithGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/today`,
-      },
-    });
-    if (error) throw error;
-  }
+  const signInWithEmail = useCallback(async (email: string, password: string) => {
+    try {
+      requireSupabase();
+      setError(null);
+      const { error: authError } = await requireSupabaseClient().auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (authError) throw authError;
+    } catch (err) {
+      const message = getAuthErrorMessage(err);
+      setError(message);
+      throw err;
+    }
+  }, []);
 
-  async function signOut() {
+  const signUpWithEmail = useCallback(
+    async (email: string, password: string, displayName?: string) => {
+      try {
+        requireSupabase();
+        setError(null);
+        const name = displayName?.trim();
+        const { error: authError } = await requireSupabaseClient().auth.signUp({
+          email: email.trim(),
+          password,
+          options: name ? { data: { full_name: name } } : undefined,
+        });
+        if (authError) throw authError;
+      } catch (err) {
+        const message = getAuthErrorMessage(err);
+        setError(message);
+        throw err;
+      }
+    },
+    []
+  );
+
+  const resetPassword = useCallback(async (email: string) => {
+    try {
+      requireSupabase();
+      setError(null);
+      const { error: authError } = await requireSupabaseClient().auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/login`,
+      });
+      if (authError) throw authError;
+    } catch (err) {
+      const message = getAuthErrorMessage(err);
+      setError(message);
+      throw err;
+    }
+  }, []);
+
+  const signOut = useCallback(async () => {
+    if (!isSupabaseConfigured || !supabase) return;
+    setError(null);
     await supabase.auth.signOut();
-  }
+  }, []);
 
   return (
     <AuthContext.Provider
-      value={{ session, user: session?.user ?? null, loading, signUp, signIn, signInWithGoogle, signOut }}
+      value={{
+        user,
+        loading,
+        isConfigured: isSupabaseConfigured,
+        signInWithGoogle,
+        signInWithEmail,
+        signUpWithEmail,
+        resetPassword,
+        signOut,
+        error,
+        configError: supabaseConfigError,
+        clearError,
+      }}
     >
       {children}
     </AuthContext.Provider>
@@ -66,6 +181,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
   return ctx;
 }

@@ -53,8 +53,6 @@ export async function startFocusSession(req: AuthedRequest, res: Response) {
   res.status(201).json({ session });
 }
 
-// Ends the session, computes verified focus minutes server-side (never
-// trusts a client-supplied duration), and awards focus coins.
 export async function endFocusSession(req: AuthedRequest, res: Response) {
   const { id } = req.params;
 

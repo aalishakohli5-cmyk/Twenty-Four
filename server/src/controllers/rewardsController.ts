@@ -24,8 +24,6 @@ export async function listRewards(req: AuthedRequest, res: Response) {
   });
 }
 
-// Unlocked rewards stay permanently available once bought (product doc
-// section 6): this only ever inserts a UserReward row once.
 export async function purchaseReward(req: AuthedRequest, res: Response) {
   const { rewardId } = req.body;
 

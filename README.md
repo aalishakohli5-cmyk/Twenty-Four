@@ -2,135 +2,97 @@
 
 <img src="./client/public/logo.png" alt="TwentyFour Logo" width="140" style="border-radius: 24px;">
 
-# TwentyFour ⏱️
+# TWENTY FOUR | Time = Money
 
-### **Time = Money**
-
-> Every hour has value. The question is — what are you going to do with it?
+**Every hour has value.**
 
 <p>
-  <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white">
-  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
-  <img src="https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white">
-  <img src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
-</p>
-
-<p>
-  <img src="https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white">
-  <img src="https://img.shields.io/badge/Express.js-Backend-000000?style=for-the-badge&logo=express&logoColor=white">
-  <img src="https://img.shields.io/badge/Supabase-Database%20%26%20Auth-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white">
+  <img src="https://img.shields.io/badge/TypeScript-6-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
+  <img src="https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
+  <img src="https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white">
   <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white">
 </p>
 
 </div>
 
----
+A gamified productivity app where your day is represented as 24 hours. Plan tasks, focus deeply, earn virtual coins, and unlock themes and companions in The Vault.
 
-## 🧠 What is TwentyFour?
+## Plan → Focus → Earn → Unlock
 
-TwentyFour is a gamified productivity app built around one simple idea:
+- Plan tasks inside a visible 24-hour day
+- Start focused work sessions connected to real tasks
+- Earn coins for focus time and task completion
+- Track progress through a wallet and daily report
+- Spend earned coins on unlockable themes and rewards
 
-> **Your time should feel valuable.**
+## Key features
 
-Instead of throwing a huge to-do list at you, TwentyFour gives you an actual **24-hour timeline**.
+- Cinematic, animated landing experience
+- 24-hour timeline with coin rewards per hour
+- Focus mode with draggable taskbar and Picture-in-Picture
+- The Vault — themes, backgrounds, and companions
+- Dark / light / system color modes
+- Activity heatmap and insights
+- Supabase sign-up and login
+- Express + Prisma API for tasks, wallet, focus, and rewards
 
-Plan your day → focus on what matters → earn coins → unlock rewards.
+## Project structure
 
-### **PLAN → FOCUS → EARN → UNLOCK**
+```
+client/          # Twenty Four frontend (Vite + React)
+server/          # Express API + Prisma
+```
 
----
+## Quick start
 
-## 🚀 What can you do with TwentyFour?
+### Frontend
 
-- 🕐 **Plan your entire day** across 24 real hours.
-- 🎯 **Focus on specific tasks** with dedicated focus sessions.
-- 🪙 **Earn coins** for focused time and completed tasks.
-- 💰 **Track your progress** through your personal wallet.
-- 🎁 **Unlock rewards** using the coins you've earned.
-- 📊 **See where your day went** through productivity reports.
-- 🔐 **Keep your workspace private** with authentication.
-- ✨ **Personalize your experience** with unlockable rewards and themes.
+```bash
+cd client
+npm install
+cp .env.example .env
+npm run dev
+```
 
----
+Open [http://localhost:5173](http://localhost:5173)
 
-## 🪙 The Coin System
+### Backend
 
-The idea is simple:
+```bash
+cd server
+npm install
+cp .env.example .env
+npx prisma migrate dev
+npm run dev
+```
 
-**Your effort → Your coins → Your rewards**
+## Environment variables
 
-| Action | Coins |
-|---|---:|
-| Focused work | Based on focused minutes + hourly rate |
-| Complete a short task | +5 |
-| Complete a medium task | +10 |
-| Complete a difficult task | +20 |
+**Client** (`client/.env`):
 
-> Coins are virtual in-app points and have **no real-world monetary value**.
+```bash
+VITE_SUPABASE_URL=
+VITE_SUPABASE_PUBLISHABLE_KEY=
+VITE_API_URL=http://localhost:4000
+```
 
----
+**Server** (`server/.env`): see `server/.env.example`
 
-## 🎯 The Core Experience
+Never commit real credentials. `.env` files are gitignored.
 
-### 01 — PLAN 🕐
+## Scripts
 
-Look at your 24 hours and decide where your time is going.
+| Location | Command | Description |
+| --- | --- | --- |
+| `client/` | `npm run dev` | Start frontend dev server |
+| `client/` | `npm run build` | Production build |
+| `client/` | `npm run lint` | Run oxlint |
+| `server/` | `npm run dev` | Start API server |
+| `server/` | `npm run build` | Compile TypeScript |
+| `server/` | `npm run grant-coins` | Grant trial coins by email |
 
-### 02 — FOCUS 🎯
+## License
 
-Start a focus session directly from a planned task and put the time in.
-
-### 03 — EARN 🪙
-
-Your focused time and completed tasks turn into coins.
-
-### 04 — UNLOCK 🎁
-
-Use those coins to unlock rewards and personalize your experience.
-
----
-
-## 🛠️ Tech Stack
-
-| Part | Technology |
-|---|---|
-| Frontend | React + Vite + TypeScript |
-| Styling | Tailwind CSS |
-| Animation | Framer Motion |
-| Backend | Node.js + Express + TypeScript |
-| Database | Supabase Postgres |
-| Authentication | Supabase Auth |
-| ORM | Prisma |
-| Deployment | Vercel + Render |
-
----
-
-## 📊 Project Status
-
-**TwentyFour is currently an early-stage hackathon project.**
-
-The core user journey and technical foundation are already in place, while we're continuing to improve the UI, accessibility, testing, and overall experience.
-
----
-
-## 💡 Why TwentyFour?
-
-Because productivity shouldn't always feel like:
-
-> *"I still have 17 things left to do."*
-
-It should feel like:
-
-> **"I used my time well today."**
-
-That's what TwentyFour is trying to build.
-
----
-
-<div align="center">
-
-### ⏱️ Every hour has value.
-
-## **Make it count.**
-
-</div>
+MIT
