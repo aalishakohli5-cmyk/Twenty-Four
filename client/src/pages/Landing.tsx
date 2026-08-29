@@ -241,6 +241,8 @@ export default function Landing() {
         </div>
       </section>
 
+      <LandingDayPreview />
+
       <section id="system" className="cinema-features">
         <div className="features-noise" aria-hidden="true" />
         <div className="features-head">

@@ -11,6 +11,70 @@ body {
   overflow-x: hidden;
 }
 
+/* Selective teammate-inspired orbit, rebuilt in TwentyFour theme */
+.auth-orbit-panel{max-width:40rem;transform:none}
+.auth-orbit-title{margin:.85rem 0 .2rem!important;font-size:clamp(2.65rem,4vw,4.7rem)!important;line-height:.94!important;letter-spacing:-.06em!important;text-transform:none}
+.auth-orbit-title em{color:#f0b429!important;font-family:inherit!important;font-style:normal!important;text-shadow:0 0 28px #f0b4293d}
+.auth-orbit-panel>p{max-width:31rem;margin-top:.25rem;color:rgba(238,232,213,.56);font-family:"Avenir Next",Avenir,sans-serif;font-size:.76rem;line-height:1.65}
+.auth-orbit-visual{position:relative;width:min(27rem,51vh);aspect-ratio:1;margin:.8rem 0 .4rem;isolation:isolate}
+.auth-orbit-glow{position:absolute;inset:18%;border-radius:50%;background:radial-gradient(circle,#f0b42920,transparent 68%);filter:blur(14px);animation:authOrbitGlow 4s ease-in-out infinite}
+.auth-orbit-visual:before,.auth-orbit-visual:after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.auth-orbit-visual:before{inset:1%;border:1px solid rgba(238,232,213,.08)}
+.auth-orbit-visual:after{inset:16%;border:1px solid rgba(240,180,41,.12)}
+.auth-orbit-ring{position:absolute;inset:7%;border:1px dashed rgba(240,180,41,.29);border-radius:50%;animation:authOrbitSpin 36s linear infinite}
+.auth-orbit-ring i{position:absolute;width:.38rem;height:.38rem;border-radius:50%;background:rgba(251,244,230,.42);box-shadow:0 0 10px rgba(251,244,230,.08);transform:translate(-50%,-50%)}
+.auth-orbit-ring i:nth-child(3n){background:#f0b429;box-shadow:0 0 12px #f0b4298c}
+.auth-orbit-ring i.active{width:.72rem;height:.72rem;background:#ef6655;box-shadow:0 0 0 5px #ef66551c,0 0 22px #ef6655}
+.auth-orbit-satellites{position:absolute;inset:2%;border-radius:50%;animation:authOrbitSpin 18s linear infinite reverse}
+.auth-orbit-satellites b{position:absolute;width:.62rem;height:.62rem;border-radius:50%;background:#fbf4e6;box-shadow:0 0 16px #fbf4e6}
+.auth-orbit-satellites b:nth-child(1){top:8%;left:50%}
+.auth-orbit-satellites b:nth-child(2){right:8%;top:57%;background:#f0b429;box-shadow:0 0 18px #f0b429}
+.auth-orbit-satellites b:nth-child(3){bottom:8%;left:25%;background:#ef6655;box-shadow:0 0 18px #ef6655}
+.auth-orbit-number{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.auth-orbit-number>span{display:flex;align-items:baseline;justify-content:center;font-family:"Avenir Next",Avenir,"Helvetica Neue",sans-serif;font-size:clamp(5rem,8vw,8rem);font-weight:700;letter-spacing:-.11em;line-height:.82}
+.auth-orbit-number strong:first-child{color:#fbf4e6}
+.auth-orbit-number strong:last-child{color:#f0b429;text-shadow:0 0 32px #f0b42938}
+.auth-orbit-number small{margin-top:.8rem;color:rgba(251,244,230,.48);font-size:.5rem;font-weight:700;letter-spacing:.28em}
+@keyframes authOrbitSpin{to{transform:rotate(360deg)}}
+@keyframes authOrbitGlow{50%{opacity:.55;transform:scale(1.1)}}
+
+/* Interactive landing-day preview */
+.day-preview-section{position:relative;overflow:hidden;padding:clamp(5rem,9vw,9rem) clamp(1.25rem,4vw,4rem);background:linear-gradient(180deg,#071014,#10192b 45%,#0b1523)}
+.day-preview-section:before{content:"";position:absolute;inset:-30%;background:radial-gradient(circle at 70% 40%,#f0b42918,transparent 20rem),radial-gradient(circle at 20% 70%,#5d83b82b,transparent 26rem);filter:blur(20px);animation:dayPreviewDrift 14s ease-in-out infinite alternate}
+.day-preview-shell{position:relative;max-width:86rem;margin:0 auto;border:1px solid rgba(251,244,230,.12);border-radius:2rem;padding:clamp(1.5rem,3vw,3rem);background:linear-gradient(145deg,rgba(20,31,52,.9),rgba(6,15,24,.88));box-shadow:inset 0 1px rgba(255,255,255,.07),0 35px 100px rgba(0,0,0,.35);backdrop-filter:blur(22px)}
+.day-preview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:2rem}
+.day-preview-head>div>span{color:rgba(240,180,41,.76);font-size:.56rem;font-weight:700;letter-spacing:.25em}
+.day-preview-head h2{margin:.75rem 0 .7rem;color:#fbf4e6;font-family:"Avenir Next",Avenir,sans-serif;font-size:clamp(3rem,6vw,6.6rem);font-weight:600;letter-spacing:-.07em;line-height:.83;text-transform:uppercase}
+.day-preview-head h2 em{color:#f0b429;font-style:normal;text-shadow:0 0 28px #f0b42935}
+.day-preview-head p{max-width:35rem;color:rgba(251,244,230,.54);font-size:.78rem;line-height:1.7}
+.day-preview-head time{display:flex;flex-direction:column;align-items:flex-end;color:#f5d16b;font-size:1.5rem;font-weight:700;letter-spacing:.06em;text-shadow:0 0 18px #f0b42965}
+.day-preview-head time small{margin-top:.35rem;color:rgba(251,244,230,.34);font-size:.45rem;letter-spacing:.25em;text-shadow:none}
+.day-preview-workspace{display:grid;grid-template-columns:8.5rem minmax(0,1fr);gap:1rem;margin-top:2.7rem}
+.day-preview-steps{display:flex;flex-direction:column;gap:.55rem;margin:0;padding:0;list-style:none}
+.day-preview-steps li{display:flex;align-items:center;gap:.65rem;border:1px solid rgba(251,244,230,.08);border-radius:.75rem;padding:.75rem;background:rgba(255,255,255,.025);color:rgba(251,244,230,.54);font-size:.56rem;font-weight:700;letter-spacing:.16em;transition:.25s}
+.day-preview-steps li:first-child,.day-preview-steps li:hover{border-color:rgba(240,180,41,.34);background:rgba(240,180,41,.08);color:#fbf4e6;transform:translateX(4px)}
+.day-preview-steps span{color:#f0b429;font-size:.46rem}
+.day-preview-board{min-width:0;border:1px solid rgba(251,244,230,.09);border-radius:1.15rem;padding:1rem;background:rgba(1,8,15,.42)}
+.day-preview-track{display:grid;grid-template-columns:repeat(24,minmax(2.4rem,1fr));gap:.28rem;overflow-x:auto;padding:.6rem .25rem 1rem;scrollbar-width:thin;scrollbar-color:#f0b42955 transparent}
+.day-preview-hour{position:relative;display:flex;min-height:5.2rem;flex-direction:column;align-items:center;justify-content:flex-end;gap:.55rem;border:1px solid transparent;border-radius:.6rem;padding:.6rem .2rem;background:rgba(255,255,255,.02);color:rgba(251,244,230,.31);transition:transform .22s,border-color .22s,background .22s,color .22s,box-shadow .22s}
+.day-preview-hour span{font-size:.47rem;font-weight:700}
+.day-preview-hour i{width:.3rem;height:.3rem;border-radius:50%;background:currentColor}
+.day-preview-hour:hover,.day-preview-hour:focus-visible{outline:none;transform:translateY(-5px);border-color:rgba(251,244,230,.2);background:rgba(251,244,230,.06);color:#fbf4e6}
+.day-preview-hour.is-planned{color:#f0b429;background:linear-gradient(180deg,rgba(240,180,41,.03),rgba(240,180,41,.12))}
+.day-preview-hour.is-now:before{content:"NOW";position:absolute;top:.55rem;color:#ef6655;font-size:.38rem;font-weight:800;letter-spacing:.14em}
+.day-preview-hour.is-now i{background:#ef6655;box-shadow:0 0 14px #ef6655}
+.day-preview-hour.is-selected{transform:translateY(-7px);border-color:rgba(240,180,41,.65);background:linear-gradient(180deg,rgba(240,180,41,.18),rgba(240,180,41,.05));color:#fbf4e6;box-shadow:0 14px 30px rgba(0,0,0,.25),0 0 24px rgba(240,180,41,.1)}
+.day-preview-selection{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid rgba(251,244,230,.08);padding:1.1rem .4rem .2rem}
+.day-preview-selection div{display:grid;gap:.25rem}
+.day-preview-selection span{color:#f0b429;font-size:.52rem;font-weight:700;letter-spacing:.15em}
+.day-preview-selection strong{color:#fbf4e6;font-size:1rem}
+.day-preview-selection small{color:rgba(251,244,230,.34);font-size:.46rem;letter-spacing:.13em}
+.day-preview-selection a{display:flex;align-items:center;gap:.7rem;border-radius:999px;padding:.75rem 1rem;background:#fbf4e6;color:#071014;font-size:.64rem;font-weight:700;transition:.22s}
+.day-preview-selection a:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.28)}
+@keyframes dayPreviewDrift{to{transform:translate3d(-3rem,2rem,0) scale(1.08)}}
+@media(max-width:780px){.day-preview-head{flex-direction:column}.day-preview-head time{align-items:flex-start}.day-preview-workspace{grid-template-columns:1fr}.day-preview-steps{display:grid;grid-template-columns:repeat(2,1fr)}.day-preview-selection{align-items:flex-start;flex-direction:column}.day-preview-selection a{align-self:stretch;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.auth-orbit-ring,.auth-orbit-satellites,.auth-orbit-glow,.day-preview-section:before{animation:none!important}}
+
 * { box-sizing: border-box; }
 ::selection { background: #f0b429; color: #07141d; }
 
