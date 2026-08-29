@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight, Check, Clock3, Coins, Sparkles } from "lucide-react";
@@ -80,6 +80,85 @@ function AmbientClock() {
       <b className="ambient-hand ambient-second" />
       <em />
     </span>
+  );
+}
+
+function formatPreviewHour(hour: number) {
+  const normalized = ((hour % 24) + 24) % 24;
+  if (normalized === 0) return "12 AM";
+  if (normalized === 12) return "12 PM";
+  return `${normalized % 12} ${normalized < 12 ? "AM" : "PM"}`;
+}
+
+const previewPlans: Record<number, { title: string; reward: string }> = {
+  8: { title: "Deep work", reward: "+20" },
+  13: { title: "Reset", reward: "+5" },
+  18: { title: "Build session", reward: "+20" },
+};
+
+function LandingDayPreview() {
+  const now = new Date();
+  const currentHour = now.getHours();
+  const [selectedHour, setSelectedHour] = useState(currentHour);
+  const selectedPlan = previewPlans[selectedHour];
+
+  return (
+    <section className="day-preview-section" aria-labelledby="day-preview-title">
+      <motion.div
+        className="day-preview-shell"
+        initial={{ opacity: 0, y: 32 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease }}
+      >
+        <header className="day-preview-head">
+          <div>
+            <span>ONE DAY · CLEARLY YOURS</span>
+            <h2 id="day-preview-title">Your next <em>24</em><br />starts now.</h2>
+            <p>Plan the hour, protect your focus, and watch effort become visible value.</p>
+          </div>
+          <time>
+            {now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            <small>LOCAL TIME</small>
+          </time>
+        </header>
+
+        <div className="day-preview-workspace">
+          <ol className="day-preview-steps">
+            {["PLAN", "FOCUS", "EARN", "UNLOCK"].map((step, index) => (
+              <li key={step}><span>{String(index + 1).padStart(2, "0")}</span>{step}</li>
+            ))}
+          </ol>
+
+          <div className="day-preview-board">
+            <div className="day-preview-track" aria-label="Interactive 24-hour preview">
+              {Array.from({ length: 24 }, (_, hour) => (
+                <button
+                  type="button"
+                  key={hour}
+                  className={`day-preview-hour ${hour === currentHour ? "is-now" : ""} ${hour === selectedHour ? "is-selected" : ""} ${previewPlans[hour] ? "is-planned" : ""}`}
+                  onMouseEnter={() => setSelectedHour(hour)}
+                  onFocus={() => setSelectedHour(hour)}
+                  onClick={() => setSelectedHour(hour)}
+                  aria-label={`Preview ${formatPreviewHour(hour)}`}
+                >
+                  <span>{String(hour).padStart(2, "0")}</span><i />
+                </button>
+              ))}
+            </div>
+
+            <div className="day-preview-selection">
+              <div>
+                <span>{formatPreviewHour(selectedHour)} — {formatPreviewHour(selectedHour + 1)}</span>
+                <strong>{selectedPlan?.title ?? "Open hour"}</strong>
+                <small>{selectedPlan ? `${selectedPlan.reward} COINS READY` : "CHOOSE IT · NAME IT · MAKE IT COUNT"}</small>
+              </div>
+              <Link to="/signup">Plan this hour <ArrowRight size={16} /></Link>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </section>
   );
 }
 
