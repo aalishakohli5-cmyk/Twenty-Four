@@ -85,3 +85,14 @@ export async function activateReward(req: AuthedRequest, res: Response) {
 
   res.json({ ok: true });
 }
+
+export async function deactivateRewardCategory(req: AuthedRequest, res: Response) {
+  const category = typeof req.body.category === "string" ? req.body.category : "theme";
+
+  await prisma.userReward.updateMany({
+    where: { profileId: req.userId!, reward: { category } },
+    data: { active: false },
+  });
+
+  res.json({ ok: true });
+}
