@@ -3,6 +3,39 @@ import { prisma } from "../lib/prisma";
 import { AuthedRequest } from "../middleware/auth";
 import { focusCoinsForMinutes } from "../utils/coins";
 
+function startOfUtcDay(daysAgo = 0) {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() - daysAgo);
+  date.setUTCHours(0, 0, 0, 0);
+  return date;
+}
+
+async function focusTotals(profileId: string, since: Date) {
+  const totals = await prisma.focusSession.aggregate({
+    where: { profileId, startedAt: { gte: since }, endedAt: { not: null } },
+    _sum: { focusedMins: true, coinsEarned: true },
+    _count: { id: true },
+  });
+  return {
+    minutes: totals._sum.focusedMins ?? 0,
+    coins: totals._sum.coinsEarned ?? 0,
+    sessions: totals._count.id,
+  };
+}
+
+export async function getFocusSummary(req: AuthedRequest, res: Response) {
+  const now = new Date();
+  const weekStart = startOfUtcDay();
+  weekStart.setUTCDate(weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7));
+  const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+  const [today, week, month] = await Promise.all([
+    focusTotals(req.userId!, startOfUtcDay()),
+    focusTotals(req.userId!, weekStart),
+    focusTotals(req.userId!, monthStart),
+  ]);
+  res.json({ today, week, month });
+}
+
 export async function startFocusSession(req: AuthedRequest, res: Response) {
   const { taskId } = req.body;
 
