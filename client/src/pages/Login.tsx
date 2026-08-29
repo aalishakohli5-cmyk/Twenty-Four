@@ -1,7 +1,48 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
+
+function OrbitTwentyFour() {
+  const currentHour = new Date().getHours();
+
+  return (
+    <motion.div
+      className="auth-orbit-visual"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      aria-label="Twenty-four hour orbit"
+    >
+      <div className="auth-orbit-glow" />
+      <div className="auth-orbit-ring" aria-hidden="true">
+        {Array.from({ length: 24 }, (_, hour) => {
+          const angle = (hour / 24) * Math.PI * 2;
+          return (
+            <i
+              key={hour}
+              className={hour === currentHour ? "active" : ""}
+              style={{
+                left: `${50 + 44 * Math.sin(angle)}%`,
+                top: `${50 - 44 * Math.cos(angle)}%`,
+              }}
+            />
+          );
+        })}
+      </div>
+      <div className="auth-orbit-satellites" aria-hidden="true">
+        <b />
+        <b />
+        <b />
+      </div>
+      <div className="auth-orbit-number">
+        <span><strong>2</strong><strong>4</strong></span>
+        <small>HOURS · YOURS</small>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Login() {
   const { signIn, signInWithGoogle } = useAuth();
@@ -57,10 +98,11 @@ export default function Login() {
       </Link>
 
       <section className="auth-layout">
-        <div className="auth-message">
-          <span className="auth-kicker">YOUR TIME, STILL YOURS</span>
-          <h1>Return to the<br /><em>hours that matter.</em></h1>
-          <p>Your next hour is still yours. Pick up your plan, return to focus, and keep building the progress you started.</p>
+        <div className="auth-message auth-orbit-panel">
+          <span className="auth-kicker">EVERY HOUR HAS VALUE</span>
+          <h1 className="auth-orbit-title">Own your <em>24.</em></h1>
+          <OrbitTwentyFour />
+          <p>Plan intentionally. Focus deeply. Earn visible progress—one hour at a time.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-card">
