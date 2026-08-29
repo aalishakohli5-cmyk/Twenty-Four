@@ -16,6 +16,10 @@
   <img src="https://img.shields.io/badge/Cursor-AI-000000?style=for-the-badge&logo=cursor&logoColor=white">
 </p>
 
+<p align="center">
+  <img src="client/public/banner.png" alt="TwentyFour — Time = Money" width="100%">
+</p>
+
 </div>
 
 A gamified productivity app where your day is represented as 24 hours. Plan tasks, focus deeply, earn virtual coins, and unlock themes and companions in The Vault.
