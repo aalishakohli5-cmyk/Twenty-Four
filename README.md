@@ -13,6 +13,7 @@
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
   <img src="https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white">
   <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white">
+  <img src="https://img.shields.io/badge/Cursor-AI-000000?style=for-the-badge&logo=cursor&logoColor=white">
 </p>
 
 </div>
