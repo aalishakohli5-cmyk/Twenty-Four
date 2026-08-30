@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
@@ -6,9 +5,9 @@ import { AppProvider, useApp } from './context/AppContext';
 import { MotionProvider } from './context/MotionContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { AppLayout } from './layouts/AppLayout';
-import { LoadingScreen } from './components/common/LoadingScreen';
-import { LandingPage } from './pages/LandingPage';
-import { LoginPage } from './pages/LoginPage';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 import { OnboardingPage } from './pages/OnboardingPage';
 import { TodayPage } from './pages/TodayPage';
 import { TimelinePage } from './pages/TimelinePage';
@@ -18,20 +17,17 @@ import { StorePage } from './pages/StorePage';
 import { InsightsPage } from './pages/InsightsPage';
 import { DayReviewPage } from './pages/DayReviewPage';
 import { SettingsPage } from './pages/SettingsPage';
+import './styles/public-legacy.css';
 
 function AppRoutes() {
   const { state } = useApp();
-  const [loading, setLoading] = useState(true);
-
-  if (loading) {
-    return <LoadingScreen onComplete={() => setLoading(false)} />;
-  }
 
   return (
     <AnimatePresence mode="wait">
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route
           path="/onboarding"
           element={
@@ -62,6 +58,12 @@ function AppRoutes() {
           <Route path="review" element={<DayReviewPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
+        <Route path="/today" element={<Navigate to="/app/today" replace />} />
+        <Route path="/focus" element={<Navigate to="/app/focus" replace />} />
+        <Route path="/wallet" element={<Navigate to="/app/wallet" replace />} />
+        <Route path="/store" element={<Navigate to="/app/store" replace />} />
+        <Route path="/report" element={<Navigate to="/app/insights" replace />} />
+        <Route path="/settings" element={<Navigate to="/app/settings" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
